@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #3563E9;
+  --color-accent: #FFD53F;
+  --color-success: #34C759;
+  --color-warning: #FF9500;
+  --color-error: #FF3B30;
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gradient-bg {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+.quiz-gradient-bg {
+  background: linear-gradient(-45deg, #7928CA, #FF0080);
+  background-size: 200% 200%;
+  animation: gradient 10s ease infinite;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+body {
+  @apply font-sans text-neutral-800;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-xl font-medium px-6 py-3 transition-all duration-200;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700;
+  }
+  
+  .btn-secondary {
+    @apply bg-neutral-100 text-neutral-800 hover:bg-neutral-200 active:bg-neutral-300;
+  }
+  
+  .btn-accent {
+    @apply bg-accent-500 text-neutral-900 hover:bg-accent-600 active:bg-accent-700;
+  }
+
+  .card {
+    @apply bg-white/90 backdrop-blur-sm rounded-2xl shadow-card p-5 transition-all duration-200;
+  }
+
+  .card-interactive {
+    @apply hover:shadow-card-hover active:scale-[0.98];
+  }
+
+  .menu-item {
+    @apply flex items-center gap-4 p-4 rounded-xl transition-all duration-200;
+  }
+
+  .menu-item-active {
+    @apply bg-primary-50 text-primary-600;
+  }
+
+  .medal-bronze {
+    @apply bg-amber-500;
+  }
+  
+  .medal-silver {
+    @apply bg-neutral-300;
+  }
+  
+  .medal-gold {
+    @apply bg-accent-500;
+  }
+
+  .rank-novice {
+    @apply text-neutral-500;
+  }
+
+  .rank-apprentice {
+    @apply text-blue-500;
+  }
+
+  .rank-expert {
+    @apply text-purple-500;
+  }
+
+  .rank-master {
+    @apply text-accent-500;
+  }
+
+  .rank-grandmaster {
+    @apply text-red-500;
+  }
+}
