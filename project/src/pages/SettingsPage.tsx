@@ -1,17 +1,20 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Globe, Bell, Moon, Info, ChevronRight } from 'lucide-react';
+import { Globe, Bell, Moon, Info, ChevronRight, User } from 'lucide-react';
 import Layout from '../components/Layout';
 import { useApp } from '../context/AppContext';
-import { Language } from '../types';
+import { Language, languages} from '../types';
+import { useNavigate } from 'react-router-dom';
 
 const SettingsPage: React.FC = () => {
-  const { language, setLanguage } = useApp();
-  
+  const { language, changeLanguage } = useApp();
+  const { userProgress } = useApp();
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLanguage(e.target.value as Language);
+    changeLanguage(e.target.value as Language);
   };
   
+  const navigate = useNavigate();
+
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -27,14 +30,6 @@ const SettingsPage: React.FC = () => {
     show: { y: 0, opacity: 1 }
   };
   
-  const languages = [
-    { value: 'french', label: 'French' },
-    { value: 'spanish', label: 'Spanish' },
-    { value: 'german', label: 'German' },
-    { value: 'italian', label: 'Italian' },
-    { value: 'japanese', label: 'Japanese' },
-    { value: 'chinese', label: 'Chinese' },
-  ];
   
   return (
     <Layout title="Settings">
@@ -44,6 +39,20 @@ const SettingsPage: React.FC = () => {
         animate="show"
         className="space-y-6"
       >
+        {/* User Settings */}
+        <motion.section variants={item}>
+          <div className="bg-white flex rounded-xl shadow-card p-4">
+            <button 
+              onClick={() => navigate("/profile")}
+              className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center"
+            >
+              <User size={20} className="text-primary-600" />
+            </button>
+            <label className="block text-bold-600 mb-2">{userProgress.profile.id}</label>
+            
+          </div>
+        </motion.section>
+
         {/* Language Settings */}
         <motion.section variants={item}>
           <h2 className="text-lg font-bold mb-4 flex items-center">

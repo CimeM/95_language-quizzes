@@ -1,4 +1,4 @@
-export type Language = 'english' | 'spanish' | 'french' | 'german' | 'italian' | 'japanese' | 'chinese' | 'korean';
+export type Language = 'english' | 'spanish' | 'french' | 'slovenian' | 'italian' ;
 
 export type GameType = 'campaign' | 'vocabulary';
 
@@ -9,6 +9,31 @@ export type ThemeType = 'grocery' | 'transport' | 'park' | 'restaurant' | 'offic
 export type MedalType = 'bronze' | 'silver' | 'gold' | 'none';
 
 export type RankType = 'novice' | 'apprentice' | 'expert' | 'master' | 'grandmaster';
+
+export const API_URL = 'https://api.langapi.rivieraapps.com'; // https://api.langapi.rivieraapps.com
+
+export  const languages = [
+  { value: 'french', label: 'French' },
+  { value: 'spanish', label: 'Spanish' },
+  { value: 'slovenian', label: 'Slovenian' },
+  { value: 'italian', label: 'Italian' },
+];
+
+export interface Plan {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  savings?: string;
+  popular?: boolean;
+  benefits: string[];
+  limitations: {
+    maxQuizzes: number;
+    maxVocabSets: number;
+    features: string[];
+  };
+  paypalInvoiceId?: string;
+}
 
 export interface ThemeQuiz {
   id: string;
@@ -47,17 +72,23 @@ export interface VocabularyWord {
 
 export interface UserProfile {
   id: string;
-  username: string;
-  email: string;
-  country: string;
-  language: Language;
-  rank: RankType;
-  totalMedals: number;
-  globalRank: number;
-  countryRank: number;
+  userId: string;
+  medals: Record<string, MedalType>;
   streak: number;
-  lastActive: string;
-  avatar?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Subscription {
+  active: boolean;
+  id: string;
+  userId: string;
+  planId: string;
+  startsAt: string;
+  expiresAt: string;
+  paymentId: string;
+  createdAt: string;
+  daysLeft: number;
 }
 
 export interface UserProgress {
@@ -68,4 +99,5 @@ export interface UserProgress {
   completedQuizzes: string[];
   vocabularySets: Record<string, VocabularySet>;
   profile: UserProfile;
+  subscription?: Subscription;
 }

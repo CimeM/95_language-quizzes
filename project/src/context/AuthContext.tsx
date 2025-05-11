@@ -6,8 +6,7 @@ import {
   signOut,
   onAuthStateChanged
 } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../config/firebase';
+import { auth } from '../config/firebase';
 import { UserProfile } from '../types';
 
 interface AuthContextType {
@@ -30,9 +29,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       if (user) {
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        if (userDoc.exists()) {
-          setUserProfile(userDoc.data() as UserProfile);
+        try {
+          const res = await fetch(`/api/users/${user.uid}`);
+          if (res.ok) {
+            const profile = await res.json();
+            setUserProfile(profile);
+          } else {
+            setUserProfile(null);
+          }
+        } catch (err) {
+          setUserProfile(null);
         }
       } else {
         setUserProfile(null);
@@ -49,7 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string, country: string) => {
     const { user } = await createUserWithEmailAndPassword(auth, email, password);
-    
+
     const newProfile: UserProfile = {
       id: user.uid,
       email: user.email!,
@@ -64,7 +70,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       lastActive: new Date().toISOString()
     };
 
-    await setDoc(doc(db, 'users', user.uid), newProfile);
+    await fetch('/api/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newProfile)
+    });
+
     setUserProfile(newProfile);
   };
 

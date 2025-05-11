@@ -22,7 +22,6 @@ const Layout: React.FC<LayoutProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { userProgress } = useApp();
-  const [showProfile, setShowProfile] = useState(false);
   
   const handleBack = () => {
     navigate(-1);
@@ -63,7 +62,7 @@ const Layout: React.FC<LayoutProps> = ({
             </div>
             
             <button 
-              onClick={() => setShowProfile(!showProfile)}
+              onClick={() => navigate("/profile")}
               className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center"
             >
               <User size={20} className="text-primary-600" />
@@ -72,33 +71,7 @@ const Layout: React.FC<LayoutProps> = ({
         </div>
       </header>
       
-      {/* Profile Dropdown */}
-      {showProfile && (
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          className="absolute top-16 right-4 w-64 bg-white rounded-xl shadow-lg z-20 p-4"
-        >
-          <div className="text-sm space-y-2">
-            <div className="font-bold">{userProgress.profile.username}</div>
-            <div className="text-neutral-600">{userProgress.profile.email}</div>
-            <div className="flex items-center space-x-2">
-              <span className={`rank-${userProgress.profile.rank}`}>
-                {userProgress.profile.rank.charAt(0).toUpperCase() + userProgress.profile.rank.slice(1)}
-              </span>
-            </div>
-            <div className="pt-2 border-t">
-              <button 
-                onClick={() => navigate('/settings')} 
-                className="w-full text-left text-primary-600 hover:text-primary-700"
-              >
-                Settings
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      )}
+      
       
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto pb-20">

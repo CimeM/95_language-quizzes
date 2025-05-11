@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Clock } from 'lucide-react';
 import Layout from '../components/Layout';
 import { weeklyQuizzes, dailyChallenge } from '../data/quizData';
 import { ThemeQuiz, Question } from '../types';
@@ -17,14 +17,14 @@ const QuizPage: React.FC = () => {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(60); // 60 seconds per quiz
   
   useEffect(() => {
     // Find the quiz data
     if (quizId === 'daily-challenge') {
-      // Create a ThemeQuiz from dailyChallenge
       setQuiz({
         ...dailyChallenge,
-        theme: 'grocery', // Placeholder theme
+        theme: 'grocery',
         medal: 'none',
         maxScore: dailyChallenge.questions.length,
       });
@@ -35,6 +35,35 @@ const QuizPage: React.FC = () => {
       }
     }
   }, [quizId]);
+
+  useEffect(() => {
+    if (!quiz) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          // Time's up - navigate to results with current score
+          const score = calculateScore();
+          if (quizId === 'daily-challenge') {
+            incrementDailyStreak();
+          } else {
+            addCompletedQuiz(quizId || '');
+          }
+          navigate(`/results/${quizId}`, { 
+            state: { 
+              score, 
+              total: quiz.questions.length 
+            } 
+          });
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [quiz, quizId, navigate]);
   
   const handleSelectOption = (option: string) => {
     if (showFeedback) return; // Prevent changing answer during feedback
@@ -84,6 +113,12 @@ const QuizPage: React.FC = () => {
       return score + (selectedAnswer === question.correctAnswer ? 1 : 0);
     }, 0);
   };
+
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
   
   if (!quiz) {
     return (
@@ -109,18 +144,32 @@ const QuizPage: React.FC = () => {
   
   return (
     <Layout title={quiz.title} showBack={false} showNav={false}>
-      {/* Progress Bar */}
+      {/* Timer */}
       <div className="mb-6">
-        <div className="flex justify-between text-sm mb-1">
-          <span>Question {currentQuestionIndex + 1} of {quiz.questions.length}</span>
-          <span>{Math.round(((currentQuestionIndex + 1) / quiz.questions.length) * 100)}%</span>
-        </div>
-        <div className="w-full bg-neutral-200 rounded-full h-2.5">
-          <div 
-            className="bg-primary-500 h-2.5 rounded-full" 
-            style={{ width: `${((currentQuestionIndex + 1) / quiz.questions.length) * 100}%` }}
-          ></div>
-        </div>
+        <motion.div 
+          className={`flex items-center justify-center p-4 rounded-xl ${
+            timeLeft <= 10 ? 'bg-error-100' : timeLeft <= 30 ? 'bg-warning-100' : 'bg-neutral-100'
+          }`}
+          animate={{
+            scale: timeLeft <= 10 ? [1, 1.05, 1] : 1
+          }}
+          transition={{ 
+            duration: 0.5,
+            repeat: timeLeft <= 10 ? Infinity : 0
+          }}
+        >
+          <Clock 
+            size={24} 
+            className={`mr-2 ${
+              timeLeft <= 10 ? 'text-error-500' : timeLeft <= 30 ? 'text-warning-500' : 'text-neutral-500'
+            }`}
+          />
+          <span className={`text-xl font-bold ${
+            timeLeft <= 10 ? 'text-error-500' : timeLeft <= 30 ? 'text-warning-500' : 'text-neutral-700'
+          }`}>
+            {formatTime(timeLeft)}
+          </span>
+        </motion.div>
       </div>
       
       {/* Question */}
