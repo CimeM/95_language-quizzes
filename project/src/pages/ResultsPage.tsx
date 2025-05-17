@@ -4,9 +4,9 @@ import { motion } from 'framer-motion';
 import { Trophy, RotateCcw, Home } from 'lucide-react';
 import Layout from '../components/Layout';
 import MedalDisplay from '../components/MedalDisplay';
-import { weeklyQuizzes } from '../data/quizData';
 import { useApp } from '../context/AppContext';
 import { MedalType } from '../types';
+import { useQuizDataContext } from '../context/QuizDataContext';
 
 interface LocationState {
   score: number;
@@ -15,6 +15,8 @@ interface LocationState {
 
 const ResultsPage: React.FC = () => {
   const { quizId } = useParams<{ quizId: string }>();
+  const { weeklyQuizzes, dailyChallenge} = useQuizDataContext();
+  // const { clubId } = useParams<{ clubId: string }>();
   const location = useLocation();
   const navigate = useNavigate();
   const { updateQuizMedal } = useApp();

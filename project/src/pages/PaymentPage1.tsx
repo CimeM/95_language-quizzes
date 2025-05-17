@@ -13,7 +13,7 @@ const PaymentPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     const initialOptions = {
-        clientId: 'AeWQjCTnjoA2cWIud7r5OoHIj2sIz4xpMKxu9UdKOaRbOHStz7KQ7ozyvqVU8xN4OeJX6qr4S2C6Upkf' || process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID , // Use your env variable
+        clientId: 'AdWGBeltgIC5D6wj9Tr0jFmEeCzwha_XzPwqeuCzbk6NpZJKsCEcVp1pkIIzypH1ZEq8oBZm-wk6jWPR' || process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID , // Use your env variable
         currency: 'EUR',
         intent: 'capture',
     };

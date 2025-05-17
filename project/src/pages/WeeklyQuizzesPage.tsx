@@ -4,14 +4,14 @@ import { motion } from 'framer-motion';
 import { ShoppingCart, Train, Trees, Utensils, Briefcase } from 'lucide-react';
 import Layout from '../components/Layout';
 import Card from '../components/Card';
-import { weeklyQuizzes } from '../data/quizData';
 import { useApp } from '../context/AppContext';
 import { ThemeType } from '../types';
+import { useQuizDataContext } from '../context/QuizDataContext';
 
 const WeeklyQuizzesPage: React.FC = () => {
   const navigate = useNavigate();
   const { userProgress } = useApp();
-  
+  const { weeklyQuizzes, dailyChallenge} = useQuizDataContext();
   const getThemeIcon = (theme: ThemeType) => {
     switch (theme) {
       case 'grocery': return <ShoppingCart size={24} />;
@@ -52,8 +52,8 @@ const WeeklyQuizzesPage: React.FC = () => {
               title={quiz.title}
               description={quiz.description}
               icon={getThemeIcon(quiz.theme)}
-              onClick={() => navigate(`/quiz/${quiz.id}`)}
-              medal={userProgress.weeklyQuizzes[quiz.id] || 'none'}
+              onClick={() => navigate(`/quiz/${quiz.id}`)} 
+              medal={userProgress.weeklyQuizzes == undefined ? 'none' : userProgress.weeklyQuizzes[quiz.id.replace(/\W/g, '')] || 'none'}
             />
           </motion.div>
         ))}

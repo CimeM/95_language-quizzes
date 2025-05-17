@@ -1,47 +1,112 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { toast } from 'react-toastify';
-import { Language, UserProgress, MedalType } from '../types';
+import { Language,Country, UserProgress, MedalType, Theme, UserProfile, MedalInfo } from '../types';
 import * as api from '../services/api';
+import { useAuth } from './AuthContext';
 
 interface AppContextType {
+  country: Country;
   language: Language;
+  theme: Theme;
   changeLanguage: (lang: Language) => void;
   userProgress: UserProgress;
+  userProfile: UserProfile;
+  setUserProfile: (profile: UserProfile) => void;
   updateQuizMedal: (quizId: string, medal: MedalType) => void;
   incrementDailyStreak: () => void;
   resetDailyStreak: () => void;
   addCompletedQuiz: (quizId: string) => void;
+  updateCountry: (country: Country) => void;
+  changeTheme: (theme: Theme) => void;
+  resetUserProgress: () => void;
 }
 
+
 const defaultUserProgress: UserProgress = {
-    language: 'french',
-    weeklyQuizzes: {},
-    dailyStreak: 0,
+    userId: "",
+    medals: {},
+    streak: 0,
     completedQuizzes: [],
-    profile: {
-        id: '1',
-        userId: '1',
-        medals: {},
-        streak: 0,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-    },
-    vocabularySets: undefined
+    lastCompletedDaily: "",
+    vocabularySets: {},
+    weeklyQuizzes: {},
+    updatedAt: new Date().toISOString(),
+};
+
+const defaultUserProfile: UserProfile = {
+  id: '1',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  language: "french",
+  country: "UK",
+  email: "test@gmail.com",
+  username: "",
+  rank: "",
+  totalMedals: 0,
+  globalRank: 0,
+  countryRank: 0,
+  lastActive: new Date().toISOString(),
+  theme: 'light'
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { user } = useAuth();
+
+  const [theme, setTheme] = useState<Theme>('light');
   const [language, setLanguage] = useState<Language>('french');
+  const [country, setCountry] = useState<Country>('FR');
+  // set profile from local storage (or default) for immediate UI responsiveness.
+  const [userProfile, setUserProfile] = useState<UserProfile>(() => {
+    try {
+      const saved = localStorage.getItem('userProfile');
+      var savedJson = saved ? JSON.parse(saved) : defaultUserProfile;
+      savedJson.id = user?.uid;
+      return savedJson;
+    } catch {
+      return defaultUserProfile;
+    }
+  });
+
+  // fetch UserProfile from the api on mount
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        console.log("requesting user account on id:", user?.uid);
+        if(user?.uid == undefined ){
+          return
+        }
+        var profileFromApi = await api.getUserAccount( user==null ? "1": user.uid );
+        profileFromApi.id = user?.uid || '1';
+        if( profileFromApi.hasOwnProperty("error") ){
+          console.log("error foun in user account", profileFromApi);
+          return 
+        }
+        setUserProfile(profileFromApi);
+        localStorage.setItem('userProfile', JSON.stringify(profileFromApi));
+      } catch (error) {
+        // Optionally, show a toast or log error
+        console.warn('Could not fetch user profile from API, using local storage:', error);
+        // Do nothing: state is already set from local storage
+      }
+    };
+  
+    fetchUserProfile();
+  }, []);
+
+  // theme change
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
 
   const [userProgress, setUserProgress] = useState<UserProgress>(() => {
     try {
+      // fetch from storage foor speed
       const savedProgress = localStorage.getItem('userProgress');
-      
-      // TODO , check if all JSON keys are there, if not set them form the default 
-      const validate = savedProgress ? JSON.parse(savedProgress) : defaultUserProgress;
-    //   console.log("savedProgress", validate.language);
-      setLanguage(validate.language)
+      var validate = savedProgress ? JSON.parse(savedProgress) : defaultUserProgress;
+      validate.userId = user?.uid;
+      setLanguage(validate.language);
       return validate;
     } catch (error) {
       console.error('[Storage] Failed to load progress:', error);
@@ -49,221 +114,226 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       return defaultUserProgress;
     }
   });
+  
 
-  // Sync with API and validate subscription
+  // --- Sync with API - user progress and subscription ---
   useEffect(() => {
     const syncWithApi = async () => {
       try {
-        // console.log('[API] Syncing user progress...', defaultUserProgress.profile);
-        await api.updateUserProgress(
-            userProgress.profile.id,
-            userProgress.profile.medals, 
-            userProgress.profile.streak,
-            language,
-            "", //userProgress.profile.lastCompletedDaily,
-        );
-        
-        const subscription = await api.validateSubscription(defaultUserProgress.profile.userId);
-        // console.log('[API] Syncing users subscription...', subscription);
-        if (subscription) {
-          setUserProgress(prev => ({
-            ...prev,
-            subscription,
-          }));
+        console.log("requesting user progress on id:", user?.uid);
+        if(user == null || user?.uid == undefined){ return }
+        var userprogressFromApi = await api.retriveUserProgress(user.uid);
+        userprogressFromApi.userId = user.uid;
+        if( userprogressFromApi.hasOwnProperty("error") ){
+          console.warn("error found in user account", userprogressFromApi);
+          return;
         }
-        console.log('[API] subscription sync completed successfully');
+        setUserProgress(userprogressFromApi);
+        localStorage.setItem('userProgress', JSON.stringify(userprogressFromApi));
+        
+        // const subscription = await api.validateSubscription(user ? user.uid : "1");
+        // if (subscription) {
+        //   setUserProgress(prev => ({
+        //     ...prev,
+        //     subscription,
+        //   }));
+        // }
       } catch (error) {
         console.error('[API] Sync failed:', error);
         toast.warning('Using offline mode - changes will be saved locally');
       }
     };
-
     syncWithApi();
+    // eslint-disable-next-line
   }, []);
 
-  // Save to local storage
+  // --- Save to local storage ---
   useEffect(() => {
     try {
-      console.log('[Storage] Saving progress to local storage');
       localStorage.setItem('userProgress', JSON.stringify(userProgress));
     } catch (error) {
       console.error('[Storage] Failed to save progress:', error);
       toast.error('Failed to save progress!');
     }
+
   }, [userProgress]);
 
-    const updateQuizMedal = async (quizId: string, medal: MedalType) => {
-        try {
-        console.log('[Medal] Updating quiz medal:', { quizId, medal });
-        setUserProgress(prev => {
-            const currentMedal = prev.weeklyQuizzes[quizId] || 'none';
-            const medalRank = { none: 0, bronze: 1, silver: 2, gold: 3 };
-            
-            if (medalRank[medal] > medalRank[currentMedal as MedalType]) {
-                const newProgress = {
-                    ...prev,
-                    weeklyQuizzes: {
-                    ...prev.weeklyQuizzes,
-                    [quizId]: medal
-                    }
-                };
+  useEffect(() => {
+    try {
+      localStorage.setItem('userProfile', JSON.stringify(userProfile));
+    } catch (error) {
+      console.error('[Storage] Failed to save profile:', error);
+      toast.error('Failed to save profile!');
+    }
+  }, [userProfile]);
 
-                // Try to sync with API
-                api.updateUserProgress(
-                    userProgress.profile.id,
-                    newProgress.profile.medals, 
-                    newProgress.profile.streak,
-                    language,
-                    "", //userProgress.profile.lastCompletedDaily,
-                )
-                .catch(error => {
-                    console.error('[API] Failed to update medal:', error);
-                    toast.warning('Medal saved locally - will sync when online');
-                });
+  const updateQuizMedal = async (quizId: string, medal: MedalType) => {
 
-            return newProgress;
-            }
-            return prev;
-        });
-        } catch (error) {
-        console.error('[Medal] Failed to update medal:', error);
-        toast.error('Failed to update medal!');
-        }
-    };
-
-    const incrementDailyStreak = async () => {
-        try {
-            console.log('[Streak] Incrementing daily streak');
-            const today = new Date().toDateString();
-            
-            setUserProgress(prev => {
-                if (prev.lastCompletedDaily === today) {
-                return prev;
-                }
-                
-                const newProgress = {
-                ...prev,
-                dailyStreak: prev.dailyStreak + 1,
-                lastCompletedDaily: today,
-                };
-
-                // Try to sync with API
-                api.updateUserProgress(
-                    userProgress.profile.id,
-                    newProgress.profile.medals, 
-                    newProgress.profile.streak,
-                    language,
-                    "", //userProgress.profile.lastCompletedDaily,
-                )
-                .catch(error => {
-                    console.error('[API] Failed to update streak:', error);
-                    toast.warning('Streak saved locally - will sync when online');
-                });
-
-                return newProgress;
-            });
-        } catch (error) {
-        console.error('[Streak] Failed to update daily streak:', error);
-        toast.error('Failed to update daily streak!');
-        }
-    };
-
-    const changeLanguage = async (language: Language) => {
-        try {
-            setLanguage(language);
-            console.log('[Language] Change language action');
-            const today = new Date().toDateString();
-            
-            setUserProgress(prev => {
-                if (prev.lastCompletedDaily === today) {
-                return prev;
-                }
-                
-                const newProgress = {
-                ...prev,
-                language: language,
-                };
-
-                // Try to sync with API
-                api.updateUserProgress(
-                    userProgress.profile.id,
-                    newProgress.profile.medals, 
-                    newProgress.profile.streak,
-                    language,
-                    "", //userProgress.profile.lastCompletedDaily,
-                )
-                .catch(error => {
-                    console.error('[API] Failed to update language:', error);
-                    toast.warning('Language change saved locally - will sync when online');
-                });
-
-                return newProgress;
-            });
-        } catch (error) {
-        console.error('[Language] Failed to update:', error);
-        toast.error('Failed to update language!');
-        }
-    };
-
-    const resetDailyStreak = async () => {
-        try {
-        console.log('[Streak] Resetting daily streak');
-        setUserProgress(prev => {
-            const newProgress = {
+    const clubId = "default";
+    console.log("updateQuizMedal", quizId, medal);
+    try {
+      setUserProgress(prev => {
+        const key = quizId.replace(/\W/g, '');
+        const currentMedalInfo = prev.medals?.[key] || { medal: 'none', clubId: '' };
+        const medalRank = { none: 0, bronze: 1, silver: 2, gold: 3 };
+        const currentWeeklyMedal = prev.weeklyQuizzes?.[key] || 'none';
+        // console.log("updateQuizMedal medalRank[medal] > medalRank[currentMedalInfo.medal as MedalType]", medalRank[medal], ">", medalRank[currentMedalInfo.medal as MedalType], (medalRank[medal] > medalRank[currentMedalInfo.medal]) );
+        if (medalRank[medal] > medalRank[currentMedalInfo.medal]) {
+          const newMedalInfo: MedalInfo = { medal, clubId };
+          const newProgress = {
             ...prev,
-            dailyStreak: 0,
-            };
-
-            // Try to sync with API
-            api.updateUserProgress(
-                userProgress.profile.id,
-                newProgress.profile.medals, 
-                newProgress.profile.streak,
-                language,
-                "",
-            )
-            .catch(error => {
-                console.error('[API] Failed to reset streak:', error);
-                toast.warning('Streak reset locally - will sync when online');
-            });
-
-            return newProgress;
-        });
-        } catch (error) {
-        console.error('[Streak] Failed to reset streak:', error);
-        toast.error('Failed to reset streak!');
-        }
-    };
-
-    const addCompletedQuiz = (quizId: string) => {
-        try {
-        console.log('[Quiz] Adding completed quiz:', quizId);
-        setUserProgress(prev => {
-            if (prev.completedQuizzes.includes(quizId)) {
-            return prev;
+            medals: {
+              ...prev.medals,
+              [key]: newMedalInfo,
+            },
+            weeklyQuizzes: {
+              ...prev.weeklyQuizzes,
+              // Update weekly medal only if new medal is better than current weekly medal
+              [key]: medalRank[medal] > medalRank[currentWeeklyMedal] ? medal : currentWeeklyMedal
             }
-            
-            return {
-            ...prev,
-            completedQuizzes: [...prev.completedQuizzes, quizId],
-            };
+          };
+        api.updateUserProgress(newProgress).catch(error => {
+          console.error('[API] Failed to update medal:', error);
+          toast.warning('Medal saved locally - will sync when online');
         });
-        } catch (error) {
-        console.error('[Quiz] Failed to update completed quizzes:', error);
-        toast.error('Failed to update completed quizzes!');
-        }
-    };
+        return newProgress;
+      }
+      return prev;
+    });
+  } catch (error) {
+    console.error('[Medal] Failed to update medal:', error);
+    toast.error('Failed to update medal!');
+  }
+};
 
-  const value = {
+  const incrementDailyStreak = async () => {
+    try {
+      const today = new Date().toDateString();
+      setUserProgress(prev => {
+        if (prev.lastCompletedDaily === today) {
+          return prev;
+        }
+        const newProgress = {
+          ...prev,
+          streak: prev.streak + 1,
+          lastCompletedDaily: today,
+        };
+        api.updateUserProgress(newProgress ).catch(error => {
+          console.error('[API] Failed to update streak:', error);
+          toast.warning('Streak saved locally - will sync when online');
+        });
+        return newProgress;
+      });
+    } catch (error) {
+      console.error('[Streak] Failed to update daily streak:', error);
+      toast.error('Failed to update daily streak!');
+    }
+  };
+
+  const updateCountry = async (country: Country) => {
+    try {
+      setCountry(country)
+      setUserProfile(prev => ({
+        ...prev,
+        country
+      }));
+      await api.updateUserAccount(userProfile);
+    } catch (error) {
+      console.error('[Country] Failed to update country:', error);
+      toast.error('Failed to update country!');
+    }
+  };
+
+  const changeTheme = async (theme: Theme) => {
+    setTheme(theme);
+    setUserProfile( prev => ({
+      ...prev, theme:theme
+    }) )
+    await api.updateUserAccount( userProfile );
+  }
+  const changeLanguage = async (lang: Language) => {
+    try {
+      setLanguage(lang);
+      setUserProfile(prev => ({
+        ...prev,
+        language: lang
+      }));
+      setUserProgress(prev => ({
+        ...prev,
+      }));
+      await api.updateUserProgress( userProgress);
+    } catch (error) {
+      console.error('[Language] Failed to update:', error);
+      toast.error('Failed to update language!');
+    }
+  };
+
+  const resetDailyStreak = async () => {
+    try {
+      setUserProgress(prev => {
+        const newProgress = {
+          ...prev,
+          streak: 0,
+        };
+        api.updateUserProgress( newProgress).catch(error => {
+          console.error('[API] Failed to reset streak:', error);
+          toast.warning('Streak reset locally - will sync when online');
+        });
+        return newProgress;
+      });
+    } catch (error) {
+      console.error('[Streak] Failed to reset streak:', error);
+      toast.error('Failed to reset streak!');
+    }
+  };
+
+  const addCompletedQuiz = (quizId: string) => {
+    setUserProgress(prev => {
+      if( prev.completedQuizzes == undefined ){
+        return {
+          ...prev,
+          completedQuizzes: [...[], quizId],
+        };
+      } 
+      const completedQuizzes = prev.completedQuizzes || [];
+      if (completedQuizzes.includes(quizId)) {
+        return prev;
+      }
+      
+      return {
+        ...prev,
+        completedQuizzes: [...prev.completedQuizzes, quizId],
+      };
+    });
+  };
+  const resetUserProgress = () => {
+    var userProgress = defaultUserProgress;
+    userProgress.userId = user==null ? "1" : user?.uid;
+    api.updateUserProgress( userProgress ).catch(error => {
+      console.error('[API] Failed to reset user progress:', error);
+      // toast.warning('Streak reset locally - will sync when online');
+    });
+  }
+
+  // --- Context Value ---
+  const value: AppContextType = {
+    country,
     language,
+    theme,
+    changeTheme,
     changeLanguage,
-    setLanguage,
     userProgress,
+    userProfile,
+    setUserProfile,
+    updateCountry,
     updateQuizMedal,
     incrementDailyStreak,
     resetDailyStreak,
     addCompletedQuiz,
+    resetUserProgress,
   };
+  
+  
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

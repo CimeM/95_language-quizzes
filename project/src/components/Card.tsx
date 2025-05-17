@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { MedalType } from '../types';
+import MedalDisplay from './MedalDisplay';
 
 interface CardProps {
   title: string;
@@ -22,7 +23,6 @@ const Card: React.FC<CardProps> = ({
   children
 }) => {
   const isInteractive = !!onClick;
-  
   return (
     <motion.div
       whileHover={isInteractive ? { scale: 1.02 } : {}}
@@ -49,12 +49,24 @@ const Card: React.FC<CardProps> = ({
       
       {medal !== 'none' && (
         <div className="mt-4 flex">
-          <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full medal-${medal} text-white text-xs`}>
-            {medal === 'bronze' ? 'B' : medal === 'silver' ? 'S' : 'G'}
-          </span>
-          <span className="ml-2 text-sm text-neutral-600">
-            {medal === 'bronze' ? 'Bronze Medal' : medal === 'silver' ? 'Silver Medal' : 'Gold Medal'}
-          </span>
+          {medal == 'gold' && (
+            <>
+              <MedalDisplay medal={medal} size="sm" animate />
+              <MedalDisplay medal={"silver"} size="sm" animate />
+              <MedalDisplay medal={"bronze"} size="sm" animate />
+            </>
+          )}
+          {medal == 'silver' && (
+            <>
+              <MedalDisplay medal={"bronze"} size="sm" animate />
+              <MedalDisplay medal={medal} size="sm" animate />
+            </>
+          )}
+          {medal == 'bronze' && (
+            <>
+              <MedalDisplay medal={medal} size="sm" animate />
+            </>
+          )}
         </div>
       )}
     </motion.div>

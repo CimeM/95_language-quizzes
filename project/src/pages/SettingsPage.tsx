@@ -1,18 +1,47 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Globe, Bell, Moon, Info, ChevronRight, User } from 'lucide-react';
+import { Globe, Bell, Moon, Info, ChevronRight, User, LogOut } from 'lucide-react';
 import Layout from '../components/Layout';
 import { useApp } from '../context/AppContext';
-import { Language, languages} from '../types';
+import { countries, Country, Language, languages} from '../types';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { toast } from 'react-toastify';
 
 const SettingsPage: React.FC = () => {
-  const { language, changeLanguage } = useApp();
-  const { userProgress } = useApp();
+  const { country, language, changeLanguage, theme, changeTheme, userProgress, updateCountry, resetUserProgress } = useApp();
+  const { logout } = useAuth();
+  const { user } = useAuth();   
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     changeLanguage(e.target.value as Language);
   };
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    updateCountry(e.target.value as Country);
+  };
   
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('[Settings] Logout failed:', error);
+      toast.error('Failed to log out. Please try again.');
+    }
+  };
+
+  const handleResetProgress = async () => {
+    try {
+      resetUserProgress()
+    } catch (error) {
+      console.error('[Settings] reset progress failed:', error);
+      toast.error('Something went wrong. Please try again.');
+    }
+  };
+  
+  
+  const handleThemeChange = () => {
+    changeTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
   const navigate = useNavigate();
 
   const container = {
@@ -48,11 +77,25 @@ const SettingsPage: React.FC = () => {
             >
               <User size={20} className="text-primary-600" />
             </button>
-            <label className="block text-bold-600 mb-2">{userProgress.profile.id}</label>
+            <label className="block text-bold-600 mb-2">{user?.email}</label>
             
           </div>
+          <div className="bg-white rounded-xl shadow-card p-4">
+            <label className="block text-neutral-600 mb-2">Country</label>
+            <select
+              value={country}
+              onChange={handleCountryChange}
+              className="w-full p-3 rounded-lg border border-neutral-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            >
+              {countries.map((coun) => (
+                <option key={coun.value} value={coun.value}>
+                  {coun.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </motion.section>
-
+    
         {/* Language Settings */}
         <motion.section variants={item}>
           <h2 className="text-lg font-bold mb-4 flex items-center">
@@ -112,7 +155,12 @@ const SettingsPage: React.FC = () => {
           <div className="bg-white rounded-xl shadow-card p-4 flex items-center justify-between">
             <span>Dark Mode</span>
             <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" />
+            <input 
+                type="checkbox" 
+                className="sr-only peer" 
+                checked={theme === 'dark'}
+                onChange={handleThemeChange}
+              />
               <div className="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-500"></div>
             </label>
           </div>
@@ -141,11 +189,22 @@ const SettingsPage: React.FC = () => {
               <ChevronRight size={20} className="text-neutral-400" />
             </button>
             
-            <button className="w-full p-4 flex items-center justify-between text-left">
+            <button onClick={handleResetProgress} className="w-full p-4 flex items-center justify-between text-left">
               <span className="text-error-600">Reset Progress</span>
               <ChevronRight size={20} className="text-neutral-400" />
             </button>
           </div>
+        </motion.section>
+        
+        {/* Logout Button */}
+        <motion.section variants={item}>
+          <button
+            onClick={handleLogout}
+            className="w-full p-4 flex items-center justify-center bg-error-50 text-error-600 rounded-xl hover:bg-error-100 transition-colors duration-200"
+          >
+            <LogOut size={20} className="mr-2" />
+            <span>Log Out</span>
+          </button>
         </motion.section>
       </motion.div>
     </Layout>

@@ -12,6 +12,7 @@ import PaymentPage from './pages/PaymentPage1';
 import ProfilePage from './pages/ProfilePage';
 import GlobalScorePage from './pages/GlobalScorePage';
 import { useAuth } from './context/AuthContext';
+import { QuizDataProvider } from './context/QuizDataContext';
 import { ToastContainer } from 'react-toastify';
 
 function App() {
@@ -27,20 +28,22 @@ function App() {
 
   return (
     <>
-    <Routes>
-      <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
-      <Route path="/" element={user ? <HomePage /> : <Navigate to="/login" />} />
-      <Route path="/campaign" element={user ? <CampaignPage /> : <Navigate to="/login" />} />
-      <Route path="/campaign/weekly" element={user ? <WeeklyQuizzesPage /> : <Navigate to="/login" />} />
-      <Route path="/quiz/:quizId" element={user ? <QuizPage /> : <Navigate to="/login" />} />
-      <Route path="/results/:quizId" element={user ? <ResultsPage /> : <Navigate to="/login" />} />
-      <Route path="/vocabulary" element={user ? <VocabularyPage /> : <Navigate to="/login" />} />
-      <Route path="/settings" element={user ? <SettingsPage /> : <Navigate to="/login" />} />
-      <Route path="/payment" element={<PaymentPage />} />
-      <Route path="/global-score" element={<GlobalScorePage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-    </Routes>
-    <ToastContainer position="top-right" autoClose={3000} />
+    <QuizDataProvider>
+      <Routes>
+        <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+        <Route path="/" element={user ? <HomePage /> : <Navigate to="/login" />} />
+        <Route path="/campaign" element={user ? <CampaignPage /> : <Navigate to="/login" />} />
+        <Route path="/campaign/weekly" element={user ? <WeeklyQuizzesPage /> : <Navigate to="/login" />} />
+        <Route path="/quiz/:quizId" element={user ? <QuizPage /> : <Navigate to="/login" />} />
+        <Route path="/results/:quizId" element={user ? <ResultsPage /> : <Navigate to="/login" />} />
+        <Route path="/vocabulary" element={user ? <VocabularyPage /> : <Navigate to="/login" />} />
+        <Route path="/settings" element={user ? <SettingsPage /> : <Navigate to="/login" />} />
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/global-score" element={<GlobalScorePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+      </Routes>
+      <ToastContainer position="top-right" autoClose={3000} />
+    </QuizDataProvider>
     </>
   );
 }

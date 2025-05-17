@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, Book, Settings, ArrowLeft, User, Flame } from 'lucide-react';
+import { Home, Book, Settings, ArrowLeft, User, Flame, Trophy } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 
@@ -21,7 +21,7 @@ const Layout: React.FC<LayoutProps> = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userProgress } = useApp();
+  const { userProgress, userProfile, theme } = useApp();
   
   const handleBack = () => {
     navigate(-1);
@@ -30,7 +30,7 @@ const Layout: React.FC<LayoutProps> = ({
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <div className={`flex flex-col h-full ${isQuiz ? 'quiz-gradient-bg' : 'gradient-bg'}`}>
+    <div className={`flex flex-col h-full ${isQuiz ? 'quiz-gradient-bg' : 'gradient-bg'} ${theme === 'dark' ? 'dark' : ''}`}>
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm shadow-sm z-10">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -56,9 +56,19 @@ const Layout: React.FC<LayoutProps> = ({
           </div>
 
           <div className="flex items-center space-x-4">
+            <button
+              onClick={() => navigate('/global-score')}
+              className="flex items-center space-x-2 px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900"
+            >
+              <Trophy size={16} className="text-primary-600 dark:text-primary-400" />
+              <span className="text-sm font-medium text-primary-600 dark:text-primary-400">
+                #{userProfile.globalRank || '---'}
+              </span>
+            </button>
+
             <div className="flex items-center">
               <Flame className="text-warning-500" size={20} />
-              <span className="ml-1 font-bold">{userProgress.dailyStreak}</span>
+              <span className="ml-1 font-bold">{userProgress.streak || 0}</span>
             </div>
             
             <button 

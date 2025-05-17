@@ -3,14 +3,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, Clock } from 'lucide-react';
 import Layout from '../components/Layout';
-import { weeklyQuizzes, dailyChallenge } from '../data/quizData';
 import { ThemeQuiz, Question } from '../types';
 import { useApp } from '../context/AppContext';
+import { useQuizDataContext } from '../context/QuizDataContext';
 
 const QuizPage: React.FC = () => {
   const { quizId } = useParams<{ quizId: string }>();
   const navigate = useNavigate();
   const { incrementDailyStreak, addCompletedQuiz } = useApp();
+  const { weeklyQuizzes, dailyChallenge} = useQuizDataContext();
   
   const [quiz, setQuiz] = useState<ThemeQuiz | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -98,7 +99,7 @@ const QuizPage: React.FC = () => {
         navigate(`/results/${quizId}`, { 
           state: { 
             score, 
-            total: quiz?.questions.length || 0 
+            total: quiz?.questions.length - 1 || 0 
           } 
         });
       }

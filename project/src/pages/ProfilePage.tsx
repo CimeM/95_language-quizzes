@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Calendar, Crown, Clock, Flame } from 'lucide-react';
+import { Trophy, Calendar, Crown, Clock, Flame, ChevronRight } from 'lucide-react';
 import Layout from '../components/Layout';
 import { useApp } from '../context/AppContext';
 import { Plan , API_URL} from '../types';
@@ -8,12 +8,12 @@ import { useNavigate } from 'react-router-dom';
 import Card from '../components/Card';
 
 const ProfilePage: React.FC = () => {
-    const { userProgress } = useApp();
+    const { userProgress, userProfile } = useApp();
     
-    const totalMedals = Object.values(userProgress.weeklyQuizzes).length;
-    const goldMedals = Object.values(userProgress.weeklyQuizzes).filter(m => m === 'gold').length;
-    const silverMedals = Object.values(userProgress.weeklyQuizzes).filter(m => m === 'silver').length;
-    const bronzeMedals = Object.values(userProgress.weeklyQuizzes).filter(m => m === 'bronze').length;
+    const totalMedals = userProgress.medals == null ? 0 : Object.values(userProgress.medals).length;
+    const goldMedals = Object.values(userProgress.medals).filter(mi => mi.medal === 'gold').length;
+    const silverMedals = Object.values(userProgress.medals).filter(mi => mi.medal === 'silver').length;
+    const bronzeMedals = Object.values(userProgress.medals).filter(mi => mi.medal === 'bronze').length;
     const navigate = useNavigate();
     
     const [plans, setPlans] = useState<Plan[]>([]);
@@ -36,12 +36,12 @@ const ProfilePage: React.FC = () => {
         fetchPlans();
     }, []);
     
-    const activePlan = userProgress.subscription 
-        ? plans.find(p => p.title === userProgress.subscription?.planId)
+    const activePlan = userProfile.subscription 
+        ? plans.find(p => p.title === userProfile.subscription?.planId)
         : null;
 
-    const daysUntilExpiry = userProgress.subscription
-        ? Math.ceil((new Date(userProgress.subscription.expiresAt).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+    const daysUntilExpiry = userProfile.subscription
+        ? Math.ceil((new Date(userProfile.subscription.expiresAt).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
         : 0;
 
     return (
@@ -58,7 +58,7 @@ const ProfilePage: React.FC = () => {
                 <Flame size={24} className="mr-2" />
                 <div>
                     <p className="text-sm font-medium">Daily Streak</p>
-                    <p className="text-2xl font-bold">{userProgress.dailyStreak} days</p>
+                    <p className="text-2xl font-bold">{userProgress.streak} days</p>
                 </div>
                 </div>
             </motion.div>
@@ -145,13 +145,16 @@ const ProfilePage: React.FC = () => {
             </div>
             </motion.div>
             {activePlan == null  && (
-            <motion.div>
-                <Card
-                title="Active plan"
-                description="Get the premium pass"
-                icon={<Trophy size={24} />}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="card"
                 onClick={() => navigate('/payment')}
-                />
+            >   
+                <h3 className="text-lg font-bold mb-4">
+                    Active plan
+                </h3>
             </motion.div>
             )}
             

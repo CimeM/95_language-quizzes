@@ -10,9 +10,14 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { userProgress } = useApp();
   
-  const totalMedals = Object.values(userProgress.weeklyQuizzes).length;
-  const goldMedals = Object.values(userProgress.weeklyQuizzes).filter(m => m === 'gold').length;
-  
+  const clubId = "default";
+  const totalMedals = userProgress.medals == null ? 0 : Object.values(userProgress.medals).length;
+  // const goldMedals = Object.values(userProgress.medals)
+  //   .filter(medalInfo => medalInfo.medal === "gold" && medalInfo.clubId === clubId)
+  //   .length;
+  const goldMedals = Object.values(userProgress.medals)
+    .filter(medalInfo => medalInfo.medal === "gold")
+    .length;
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -46,7 +51,7 @@ const HomePage: React.FC = () => {
           <p className="text-sm font-medium">Daily Streak</p>
           <div className="flex items-center mt-2">
             <Calendar size={20} />
-            <span className="text-2xl font-bold ml-2">{userProgress.dailyStreak} days</span>
+            <span className="text-2xl font-bold ml-2">{userProgress.streak || 0} days</span>
           </div>
         </motion.div>
         

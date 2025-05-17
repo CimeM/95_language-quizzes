@@ -3,15 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Globe } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { countries } from '../types';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, signInWithGoogle } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [country, setCountry] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +28,20 @@ const LoginPage: React.FC = () => {
       navigate('/');
     } catch (err) {
       setError('Authentication failed. Please try again.');
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError('');
+    setIsLoading(true);
+    
+    try {
+      await signInWithGoogle();
+      navigate('/');
+    } catch (err) {
+      setError('Google authentication failed. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -67,6 +83,7 @@ const LoginPage: React.FC = () => {
                   required
                   className="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter your email"
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -84,6 +101,7 @@ const LoginPage: React.FC = () => {
                   required
                   className="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Enter your password"
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -100,16 +118,14 @@ const LoginPage: React.FC = () => {
                     onChange={(e) => setCountry(e.target.value)}
                     required
                     className="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    disabled={isLoading}
                   >
                     <option value="">Select your country</option>
-                    <option value="US">United States</option>
-                    <option value="UK">United Kingdom</option>
-                    <option value="CA">Canada</option>
-                    <option value="AU">Australia</option>
-                    <option value="FR">France</option>
-                    <option value="DE">Germany</option>
-                    <option value="JP">Japan</option>
-                    <option value="BR">Brazil</option>
+                    {countries.map((coun) => (
+                      <option key={coun.value} value={coun.value}>
+                        {coun.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -118,8 +134,30 @@ const LoginPage: React.FC = () => {
             <button
               type="submit"
               className="w-full btn btn-primary"
+              disabled={isLoading}
             >
-              {isLogin ? 'Sign In' : 'Create Account'}
+              {isLoading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
+            </button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-neutral-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-neutral-500">Or continue with</span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="w-full btn btn-secondary flex items-center justify-center"
+              disabled={isLoading}
+            >
+              <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+                   alt="Google" 
+                   className="w-5 h-5 mr-2" />
+              Sign in with Google
             </button>
           </form>
 
@@ -127,6 +165,7 @@ const LoginPage: React.FC = () => {
             <button
               onClick={() => setIsLogin(!isLogin)}
               className="text-primary-600 hover:text-primary-700 text-sm"
+              disabled={isLoading}
             >
               {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
             </button>
