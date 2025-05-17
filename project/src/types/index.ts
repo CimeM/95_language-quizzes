@@ -18,6 +18,11 @@ export type RankType = 'novice' | 'apprentice' | 'expert' | 'master' | 'grandmas
 export const API_URL = 'https://api.langapi.rivieraapps.com'; // https://api.langapi.rivieraapps.com
 
 export  const languages = [
+  { value: 'fr', label: 'French' },
+  { value: 'ita', label: 'Italian' },
+];
+
+export  const countries = [
   { value: 'AF', label: 'Afghanistan' },
   { value: 'AL', label: 'Albania' },
   { value: 'DZ', label: 'Algeria' },
@@ -266,14 +271,6 @@ export  const languages = [
   { value: 'ZM', label: 'Zambia' },
   { value: 'ZW', label: 'Zimbabwe' },
   { value: 'OT', label: 'Other' },
-];
-
-export  const countries = [
-  { value: 'UK', label: 'United Kingdom' },
-  { value: 'SP', label: 'Spain' },
-  // { value: 'slovenian', label: 'Slovenian' },
-  { value: 'ITA', label: 'Italy' },
-  { value: 'FR', label: 'France' },
 ];
 
 export interface Plan {
