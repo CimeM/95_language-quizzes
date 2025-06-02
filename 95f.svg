@@ -1,0 +1,8 @@
+
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <rect width="120" height="120" fill="none"/>
+  <text x="60" y="60" font-family="Comic Sans MS, Fredoka, sans-serif" font-weight="bold" font-size="30" font-style="italic" text-anchor="middle" dominant-baseline="middle" fill="#0077FF">
+    <tspan x="40" dy="-13" font-size="28">95</tspan>
+    <tspan x="70" dy="19" font-size="75">F</tspan>
+  </text>
+</svg>
