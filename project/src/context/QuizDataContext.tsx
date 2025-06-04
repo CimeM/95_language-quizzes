@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ThemeQuiz } from '../types';
 import { fetchDailyChallenge, fetchWeeklyQuizzes } from '../services/api';
+import { useApp } from './AppContext';
 
 interface QuizContextType {
   weeklyQuizzes: ThemeQuiz[];
@@ -14,6 +15,7 @@ interface QuizContextType {
 const QuizContext = createContext<QuizContextType | undefined>(undefined);
 
 export const QuizDataProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
+  const {language} = useApp();
   const [weeklyQuizzes, setWeeklyQuizzes] = useState<ThemeQuiz[]>([]);
   const [dailyChallenge, setDailyChallenge] = useState<ThemeQuiz>({});
   const [loading, setLoading] = useState(true);
@@ -23,8 +25,10 @@ export const QuizDataProvider: React.FC<{children: React.ReactNode}> = ({ childr
     setLoading(true);
     setError(null);
     try {
-      setWeeklyQuizzes(await fetchWeeklyQuizzes());
-      setDailyChallenge(await fetchDailyChallenge());
+      // todo get set language
+      
+      setWeeklyQuizzes(await fetchWeeklyQuizzes(language));
+      setDailyChallenge(await fetchDailyChallenge(language));
     } catch (err) {
       setError('Failed to load quizzes');
     } finally {

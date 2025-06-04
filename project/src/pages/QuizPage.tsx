@@ -12,7 +12,6 @@ const QuizPage: React.FC = () => {
   const navigate = useNavigate();
   const { incrementDailyStreak, addCompletedQuiz } = useApp();
   const { weeklyQuizzes, dailyChallenge} = useQuizDataContext();
-  
   const [quiz, setQuiz] = useState<ThemeQuiz | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
@@ -132,7 +131,7 @@ const QuizPage: React.FC = () => {
   }
   
   const currentQuestion: Question | undefined = quiz.questions[currentQuestionIndex];
-  
+
   if (!currentQuestion) {
     return (
       <Layout showBack showNav={false}>

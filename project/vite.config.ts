@@ -8,12 +8,12 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'robots.txt', 'logo.svg'],
+      includeAssets: ['favicon.ico', 'robots.txt','95f.svg', 'logo.svg'],
       manifest: {
-        name: 'LinguaQuest',
-        short_name: 'LinguaQuest',
+        name: 'Fluent95',
+        short_name: 'Fluent95',
         description: 'Gamified language learning on the go',
-        theme_color: '#3563E9',
+        theme_color: '#E0E0EE',
         background_color: '#ffffff',
         display: 'standalone',
         icons: [

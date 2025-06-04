@@ -36,7 +36,7 @@ const HomePage: React.FC = () => {
   return (
     <Layout>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-2">Welcome to LinguaQuest</h1>
+        <h1 className="text-2xl font-bold mb-2">Welcome to Fluent95</h1>
         <p className="text-neutral-600">Continue your language learning journey</p>
       </div>
       

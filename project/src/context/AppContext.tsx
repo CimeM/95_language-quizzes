@@ -63,7 +63,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const saved = localStorage.getItem('userProfile');
       var savedJson = saved ? JSON.parse(saved) : defaultUserProfile;
       savedJson.id = user?.uid;
-      return savedJson;
+      return mergeUserProfile(defaultUserProfile, savedJson);
     } catch {
       return defaultUserProfile;
     }
@@ -83,7 +83,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           console.log("error foun in user account", profileFromApi);
           return 
         }
-        setUserProfile(profileFromApi);
+        // Merge with defaults
+        const mergedProfile = mergeUserProfile(defaultUserProfile, profileFromApi);
+        // Ensure the id is always set to the current user's uid
+        mergedProfile.id = user.uid;
+        setUserProfile(mergedProfile);
         localStorage.setItem('userProfile', JSON.stringify(profileFromApi));
       } catch (error) {
         // Optionally, show a toast or log error
@@ -103,14 +107,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [userProgress, setUserProgress] = useState<UserProgress>(() => {
     try {
       // fetch from storage foor speed
-      const savedProgress = localStorage.getItem('userProgress');
-      var validate = savedProgress ? JSON.parse(savedProgress) : defaultUserProgress;
-      validate.userId = user?.uid;
-      setLanguage(validate.language);
-      return validate;
+      const saved = localStorage.getItem('userProgress');
+      const savedJson = saved ? JSON.parse(saved) : {};
+      return mergeProgress(defaultUserProgress, savedJson);
+      
     } catch (error) {
       console.error('[Storage] Failed to load progress:', error);
-      toast.error('Failed to load progress. Starting fresh!');
+      // toast.error('Failed to load progress. Starting fresh!');
       return defaultUserProgress;
     }
   });
@@ -333,7 +336,47 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     resetUserProgress,
   };
   
-  
+
+  const mergeUserProfile = (defaultProfile: UserProfile, apiProfile: any): UserProfile => {
+    // Ensure the apiProfile is not null/undefined
+    const safeApiProfile = apiProfile || {};
+
+    // Merge fields, prioritizing the apiProfile but falling back to defaults
+    return {
+      ...defaultProfile,
+      ...safeApiProfile,
+      // Override specific fields only if present in apiProfile
+      id: safeApiProfile.id || defaultProfile.id,
+      createdAt: safeApiProfile.createdAt || defaultProfile.createdAt,
+      updatedAt: safeApiProfile.updatedAt || new Date().toISOString(),
+      language: safeApiProfile.language || defaultProfile.language,
+      country: safeApiProfile.country || defaultProfile.country,
+      email: safeApiProfile.email || defaultProfile.email,
+      username: safeApiProfile.username || defaultProfile.username,
+      rank: safeApiProfile.rank || defaultProfile.rank,
+      totalMedals: safeApiProfile.totalMedals || defaultProfile.totalMedals,
+      globalRank: safeApiProfile.globalRank || defaultProfile.globalRank,
+      countryRank: safeApiProfile.countryRank || defaultProfile.countryRank,
+      lastActive: safeApiProfile.lastActive || defaultProfile.lastActive,
+      theme: safeApiProfile.theme || defaultProfile.theme
+    };
+  }
+
+  const  mergeProgress = (defaultProgress: UserProgress, apiProgress: any): UserProgress => {
+    const safeApiProgress = apiProgress || {};
+      return {
+          ...defaultProgress,
+          ...safeApiProgress,
+          userId: safeApiProgress.userId || defaultProgress.userId,
+          medals: safeApiProgress.medals || defaultProgress.medals,
+          streak: safeApiProgress.streak || defaultProgress.streak,
+          completedQuizzes: safeApiProgress.completedQuizzes || defaultProgress.completedQuizzes,
+          lastCompletedDaily: safeApiProgress.lastCompletedDaily || defaultProgress.lastCompletedDaily,
+          vocabularySets: safeApiProgress.vocabularySets || defaultProgress.vocabularySets,
+          weeklyQuizzes: safeApiProgress.weeklyQuizzes || defaultProgress.weeklyQuizzes,
+          updatedAt: safeApiProgress.updatedAt || new Date().toISOString(),
+      };
+  }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

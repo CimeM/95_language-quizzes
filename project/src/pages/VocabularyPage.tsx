@@ -3,17 +3,15 @@ import { motion } from 'framer-motion';
 import { BookOpen, Plus, Search } from 'lucide-react';
 import Layout from '../components/Layout';
 import Card from '../components/Card';
+import { useNavigate } from 'react-router-dom';
+import { useVocabularyDataContext } from '../context/VocabularyDataContext';
 
 // Mock data for vocabulary categories
-const vocabularyCategories = [
-  { id: 'basics', title: 'Basics', count: 20, progress: 15 },
-  { id: 'travel', title: 'Travel & Transport', count: 30, progress: 8 },
-  { id: 'food', title: 'Food & Dining', count: 25, progress: 25 },
-  { id: 'shopping', title: 'Shopping', count: 15, progress: 3 },
-  { id: 'social', title: 'Social Interactions', count: 18, progress: 0 },
-];
+
 
 const VocabularyPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { vocabularies } = useVocabularyDataContext();
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -28,6 +26,7 @@ const VocabularyPage: React.FC = () => {
     hidden: { y: 20, opacity: 0 },
     show: { y: 0, opacity: 1 }
   };
+  
   
   return (
     <Layout title="Vocabulary">
@@ -54,23 +53,24 @@ const VocabularyPage: React.FC = () => {
         initial="hidden"
         animate="show"
       >
-        {vocabularyCategories.map((category) => (
+
+        {vocabularies.map((category) => (
           <motion.div key={category.id} variants={item}>
             <Card
               title={category.title}
-              description={`${category.count} words`}
+              description={`${ category.words.length } words`}
               icon={<BookOpen size={24} />}
-              onClick={() => {}}
+              onClick={() => navigate('/vocabulary/category/'+category.id)}
             >
               <div className="mt-3">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-neutral-600">Progress</span>
-                  <span className="font-medium">{Math.round((category.progress / category.count) * 100)}%</span>
+                  <span className="font-medium">{Math.round((category.words.filter(x => x.mastered == true).length / category.words.length) * 100)}%</span>
                 </div>
                 <div className="w-full bg-neutral-200 rounded-full h-2">
                   <div 
                     className="bg-primary-500 h-2 rounded-full" 
-                    style={{ width: `${(category.progress / category.count) * 100}%` }}
+                    style={{ width: `${(category.words.filter(x => x.mastered == true).length / category.words.length) * 100}%` }}
                   ></div>
                 </div>
               </div>

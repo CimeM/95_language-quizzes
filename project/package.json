@@ -1,7 +1,7 @@
 {
-  "name": "quiz95",
+  "name": "fluent95",
   "private": true,
-  "version": "0.1.0",
+  "version": "25.6.2",
   "type": "module",
   "homepage": "https://cimem.github.io/95_language-quizzes",
   "scripts": {

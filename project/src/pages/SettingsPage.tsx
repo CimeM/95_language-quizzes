@@ -7,6 +7,7 @@ import { countries, Country, Language, languages} from '../types';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import packageJson from '../../package.json'; 
 
 const SettingsPage: React.FC = () => {
   const { country, language, changeLanguage, theme, changeTheme, userProgress, updateCountry, resetUserProgress } = useApp();
@@ -80,8 +81,11 @@ const SettingsPage: React.FC = () => {
             <label className="block text-bold-600 mb-2">{user?.email}</label>
             
           </div>
+        
+        </motion.section>
+        <motion.section variants={item}>
           <div className="bg-white rounded-xl shadow-card p-4">
-            <label className="block text-neutral-600 mb-2">Country</label>
+            <label className="block text-neutral-600 mb-2">Your Country</label>
             <select
               value={country}
               onChange={handleCountryChange}
@@ -176,7 +180,7 @@ const SettingsPage: React.FC = () => {
           <div className="bg-white rounded-xl shadow-card divide-y divide-neutral-100">
             <div className="p-4 flex items-center justify-between">
               <span>App Version</span>
-              <span className="text-neutral-500">1.0.0</span>
+              <span className="text-neutral-500">{packageJson.version}</span>
             </div>
             
             <button className="w-full p-4 flex items-center justify-between text-left">

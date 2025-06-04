@@ -28,9 +28,12 @@ const Layout: React.FC<LayoutProps> = ({
   };
 
   const isActive = (path: string) => location.pathname === path;
+  const BGClass = theme == 'dark' ? 'gradient-bg-dark' : 'gradient-bg';  
+  const quizBGClass = theme == 'dark' ? 'quiz-gradient-bg-dark' : 'quiz-gradient-bg'; 
 
   return (
-    <div className={`flex flex-col h-full ${isQuiz ? 'quiz-gradient-bg' : 'gradient-bg'} ${theme === 'dark' ? 'dark' : ''}`}>
+    <div className={`flex flex-col h-full ${isQuiz ? quizBGClass : BGClass} ${theme === 'dark' ? 'dark' : ''}`}>
+     
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm shadow-sm z-10">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -45,26 +48,28 @@ const Layout: React.FC<LayoutProps> = ({
               </button>
             ) : (
               <div className="flex items-center">
-                <span className="text-primary-500 font-bold">Quiz</span>
-                <span className="text-accent-500 font-bold">95</span>
+                <span className="text-primary-500 font-bold">Fluent</span>
+                <span className="text-primary-500 font-bold">95</span>
               </div>
             )}
             
             {title && (
-              <h1 className="text-lg font-bold ml-2">{title}</h1>
+              <h1 className="text-md font-bold ml-2">{title}</h1>
             )}
           </div>
 
           <div className="flex items-center space-x-4">
-            <button
-              onClick={() => navigate('/global-score')}
-              className="flex items-center space-x-2 px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900"
-            >
-              <Trophy size={16} className="text-primary-600 dark:text-primary-400" />
-              <span className="text-sm font-medium text-primary-600 dark:text-primary-400">
-                #{userProfile.globalRank || '---'}
-              </span>
-            </button>
+            {!title && (  
+              <button
+                onClick={() => navigate('/global-score')}
+                className="flex items-center space-x-2 px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900"
+              >
+                <Trophy size={16} className="text-primary-600 dark:text-primary-400" />
+                <span className="text-sm font-medium text-primary-600 dark:text-primary-400">
+                  #{userProfile.globalRank || '---'}
+                </span>
+              </button>
+            )}
 
             <div className="flex items-center">
               <Flame className="text-warning-500" size={20} />

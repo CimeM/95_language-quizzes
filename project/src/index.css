@@ -17,7 +17,7 @@
 }
 
 .gradient-bg {
-  background: linear-gradient(-45deg, #fdc7b6, #de96b2, #94c3d4, #8fd3c3);
+  background: linear-gradient(-45deg, #d7aa9c, #c0829a, #7ea5b4, #7ab4a6);
   background-size: 400% 400%;
   animation: gradient 15s ease infinite;
 }
@@ -27,6 +27,20 @@
   background-size: 200% 200%;
   animation: gradient 10s ease infinite;
 }
+
+/* Dark theme gradients */
+.gradient-bg-dark {
+  background: linear-gradient(-45deg, #3a2b2b, #4c2d4c, #2d3d4c, #2c4c42);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+.quiz-gradient-bg-dark {
+  background: linear-gradient(-45deg, #4a1c8c, #99004d);
+  background-size: 200% 200%;
+  animation: gradient 10s ease infinite;
+}
+
 
 html, body {
   height: 100%;

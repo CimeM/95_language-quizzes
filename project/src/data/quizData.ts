@@ -3,6 +3,7 @@ import { ThemeQuiz } from '../types';
 export const weeklyQuizzes: ThemeQuiz[] = [
   {
     id: 'grocery-basics',
+    level: 'A1',
     title: 'Grocery Store Basics',
     language: "french",
     theme: 'grocery',
@@ -15,11 +16,7 @@ export const weeklyQuizzes: ThemeQuiz[] = [
         {
           id: "g1",
           text: "Comment appelle-t-on le rayon où l’on trouve le lait, le beurre et les yaourts ?",
-          options: [
-            "le rayon boucherie",
-            "le rayon crèmerie",
-            "le rayon épicerie",
-            "le rayon surgelés"
+          options: [ "le rayon boucherie", "le rayon crèmerie", "le rayon épicerie",  "le rayon surgelés"
           ],
           "correctAnswer": "le rayon crèmerie"
         },
@@ -105,6 +102,7 @@ export const weeklyQuizzes: ThemeQuiz[] = [
   {
     id: 'transport-essentials',
     title: 'Train Station Talk',
+    level: 'A1',
     theme: 'transport',
     language: "french",
     description: 'Master essential phrases for navigating train stations.',
@@ -206,6 +204,7 @@ export const weeklyQuizzes: ThemeQuiz[] = [
   {
     id: 'park-vocabulary',
     title: 'Park Conversations',
+    level: 'A1',
     theme: 'park',
     language: "french",
     description: 'Learn vocabulary for casual conversations at the park.',
@@ -307,6 +306,7 @@ export const weeklyQuizzes: ThemeQuiz[] = [
   {
     id: 'restaurant-phrases',
     title: 'Restaurant Orders',
+    level: 'A1',
     theme: 'restaurant',
     language: "french",
     description: 'Essential phrases for ordering food at a restaurant.',
@@ -408,6 +408,7 @@ export const weeklyQuizzes: ThemeQuiz[] = [
   {
     id: 'office-communication',
     title: 'Office Talk',
+    level: 'A1',
     theme: 'office',
     language: "french",
     description: 'Learn vocabulary for professional office communication.',
