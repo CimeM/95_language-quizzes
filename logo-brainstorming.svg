@@ -28,17 +28,17 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="1.2626711"
-     inkscape:cx="257.39086"
-     inkscape:cy="279.17008"
-     inkscape:window-width="1483"
-     inkscape:window-height="1337"
+     inkscape:cx="257.78685"
+     inkscape:cy="278.37811"
+     inkscape:window-width="2364"
+     inkscape:window-height="1327"
      inkscape:window-x="12"
      inkscape:window-y="10"
      inkscape:window-maximized="0"
      inkscape:current-layer="layer1"
      showguides="true">
     <sodipodi:guide
-       position="60.00843,91.915261"
+       position="-22.630597,189.90504"
        orientation="1,0"
        id="guide6"
        inkscape:locked="false" />
@@ -66,7 +66,8 @@
        fx="82.162649"
        fy="139.57799"
        r="22.536657"
-       gradientUnits="userSpaceOnUse" />
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(6.7053619,-1.6763405)" />
   </defs>
   <g
      inkscape:label="Layer 1"
@@ -77,39 +78,39 @@
        id="rect1"
        width="45.073315"
        height="45.073315"
-       x="60.542259"
-       y="63.242905"
+       x="7.1089067"
+       y="60.937935"
        rx="12.814962"
        ry="12.814962" />
     <text
        xml:space="preserve"
        style="font-weight:bold;font-stretch:semi-condensed;font-size:12.7px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold Semi-Condensed';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#edefef;fill-opacity:1;stroke-width:7.17899"
-       x="66.083344"
-       y="84.011795"
+       x="12.649991"
+       y="81.706825"
        id="text1"><tspan
          sodipodi:role="line"
          id="tspan1"
          style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.7px;font-family:'Noto Sans Ugaritic';-inkscape-font-specification:'Noto Sans Ugaritic, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2ea1ff;fill-opacity:1;stroke-width:7.179"
-         x="66.083344"
-         y="84.011795">95</tspan></text>
+         x="12.649991"
+         y="81.706825">95</tspan></text>
     <text
        xml:space="preserve"
        style="font-weight:bold;font-stretch:semi-condensed;font-size:32.3104px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold Semi-Condensed';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#141517;fill-opacity:1;stroke-width:9.13214"
-       x="81.070854"
-       y="98.08786"
+       x="27.637501"
+       y="95.78289"
        id="text2"><tspan
          sodipodi:role="line"
          id="tspan2"
          style="font-style:italic;font-weight:bold;font-size:32.3104px;fill:#2ea1ff;fill-opacity:1;stroke-width:9.13215"
-         x="81.070854"
-         y="98.08786">F</tspan></text>
+         x="27.637501"
+         y="95.78289">F</tspan></text>
     <rect
        style="fill:url(#radialGradient10);fill-opacity:1;stroke-width:7.17899"
        id="rect1-7"
        width="45.073315"
        height="45.073315"
-       x="59.625992"
-       y="117.04133"
+       x="66.331352"
+       y="115.36499"
        rx="12.814962"
        ry="12.814962" />
     <g
@@ -227,7 +228,8 @@
        ry="0"
        transform="rotate(-60)" />
     <g
-       id="g9">
+       id="g9"
+       transform="translate(8.3817021,76.273492)">
       <rect
          style="fill:#000000;fill-opacity:1;stroke-width:7.17899"
          id="rect7-2"
@@ -271,7 +273,7 @@
     </g>
     <g
        id="g9-9"
-       transform="matrix(0.91652197,0,0,0.91652197,57.277022,84.084646)">
+       transform="matrix(0.91652197,0,0,0.91652197,63.982384,82.408306)">
       <rect
          style="fill:#000000;fill-opacity:1;stroke-width:7.17899"
          id="rect7-2-0"
@@ -313,5 +315,16 @@
          ry="0"
          transform="rotate(-60)" />
     </g>
+    <text
+       xml:space="preserve"
+       style="font-size:8.46667px;font-family:Cabin;-inkscape-font-specification:'Cabin, Normal';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#ffff00;stroke-width:1.521"
+       x="139.55534"
+       y="140.60306"
+       id="text3"><tspan
+         sodipodi:role="line"
+         id="tspan3"
+         style="font-weight:bold;font-size:8.46667px;fill:#000000;fill-opacity:1;stroke-width:1.521"
+         x="139.55534"
+         y="140.60306">Fluent95</tspan></text>
   </g>
 </svg>
