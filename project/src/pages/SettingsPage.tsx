@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Globe, Bell, Moon, Info, ChevronRight, User, LogOut } from 'lucide-react';
 import Layout from '../components/Layout';
 import { useApp } from '../context/AppContext';
-import { countries, Country, Language, languages} from '../types';
+import { countries, Country, Language, supportedLanguages } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
@@ -14,6 +14,7 @@ const SettingsPage: React.FC = () => {
   const { logout } = useAuth();
   const { user } = useAuth();   
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log("handle set languatgge set language to ", e.target.value)
     changeLanguage(e.target.value as Language);
   };
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -114,7 +115,7 @@ const SettingsPage: React.FC = () => {
               onChange={handleLanguageChange}
               className="w-full p-3 rounded-lg border border-neutral-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
-              {languages.map((lang) => (
+              {supportedLanguages.map((lang) => (
                 <option key={lang.value} value={lang.value}>
                   {lang.label}
                 </option>

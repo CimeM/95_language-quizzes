@@ -120,10 +120,12 @@ export type ThemeType = any |
 export type MedalType = 'bronze' | 'silver' | 'gold' | 'none';
 
 export type RankType = 'novice' | 'apprentice' | 'expert' | 'master' | 'grandmaster';
-
+export const paypal_client = 'AdWGBeltgIC5D6wj9Tr0jFmEeCzwha_XzPwqeuCzbk6NpZJKsCEcVp1pkIIzypH1ZEq8oBZm-wk6jWPR'
 export const API_URL = 'https://api.langapi.rivieraapps.com'; // https://api.langapi.rivieraapps.com
 
-export  const languages = [
+export const paypal_clinet = 'QWRXR0JlbHRnSUM1RDZ3ajlUcjBqRm1FZUN6d2hhX1h6UHdxZXVDemJrNk5wWkpLc0NFY1ZwMXBrSUl6eXBIMVpFcThvQlptLXdrNmpXUFIK';
+
+export  const supportedLanguages = [
   { value: 'fr', label: 'French' },
   { value: 'ita', label: 'Italian' },
 ];
@@ -455,7 +457,7 @@ export interface UserProfile {
   email: string;
   username: string;
   country: string;
-  language: string;
+  language: Language;
   rank: string;
   totalMedals: number,
   globalRank: number,
@@ -472,6 +474,13 @@ export interface UserProfile {
 export interface MedalInfo {
   medal: MedalType;    // e.g., "silver"
   clubId: string;      // e.g., "default"
+  timeElapsedMs: number;
+}
+
+// Define the new MedalInfo type
+export interface ImpromptuTopic {
+  topic: string;    // e.g., "silver"
+  questions: string[];
 }
 
 export interface UserProgress {

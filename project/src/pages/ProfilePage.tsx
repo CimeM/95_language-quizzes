@@ -6,6 +6,7 @@ import { useApp } from '../context/AppContext';
 import { Plan , API_URL} from '../types';
 import { useNavigate } from 'react-router-dom';
 import Card from '../components/Card';
+import MedalDisplay from '../components/MedalDisplay';
 
 const ProfilePage: React.FC = () => {
     const { userProgress, userProfile } = useApp();
@@ -67,7 +68,7 @@ const ProfilePage: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="card bg-accent-500 text-neutral-800"
+                className="card bg-accent-500 text-neutral-800 bg-trophy-pattern"
             >
                 <div className="flex items-center">
                 <Trophy size={24} className="mr-2" />
@@ -116,7 +117,8 @@ const ProfilePage: React.FC = () => {
                 <div className="flex items-center justify-between">
                 <div className="flex items-center">
                     <div className="w-8 h-8 rounded-full bg-accent-500 flex items-center justify-center mr-3">
-                    <Trophy size={16} className="text-neutral-800" />
+                        <MedalDisplay medal={'gold'} size="sm" animate />
+                    {/* <Trophy size={16} className="text-neutral-800" /> */}
                     </div>
                     <span>Gold Medals</span>
                 </div>
@@ -126,7 +128,7 @@ const ProfilePage: React.FC = () => {
                 <div className="flex items-center justify-between">
                 <div className="flex items-center">
                     <div className="w-8 h-8 rounded-full bg-neutral-300 flex items-center justify-center mr-3">
-                    <Trophy size={16} className="text-neutral-800" />
+                        <MedalDisplay medal={'silver'} size="sm" animate />
                     </div>
                     <span>Silver Medals</span>
                 </div>
@@ -136,7 +138,7 @@ const ProfilePage: React.FC = () => {
                 <div className="flex items-center justify-between">
                 <div className="flex items-center">
                     <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center mr-3">
-                    <Trophy size={16} className="text-white" />
+                        <MedalDisplay medal={'bronze'} size="sm" animate />
                     </div>
                     <span>Bronze Medals</span>
                 </div>

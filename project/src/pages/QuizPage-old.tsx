@@ -18,17 +18,7 @@ const QuizPage: React.FC = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60); // 60 seconds per quiz
-  const [timeElapsedMs, setTimeElapsedMs] = useState(0); // in milliseconds
-  const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
-
-  useEffect(() => {
-    if (!quiz) return;
-    const timer = setInterval(() => {
-      setTimeElapsedMs(prev => prev + 10); // increment by 10ms
-    }, 10 ); // update every 10ms
-    return () => clearInterval(timer);
-  }, [quiz]);
-
+  
   useEffect(() => {
     // Find the quiz data
     if (quizId === 'daily-challenge') {
@@ -63,7 +53,7 @@ const QuizPage: React.FC = () => {
           navigate(`/results/${quizId}`, { 
             state: { 
               score, 
-              total: quiz.questions.length-1
+              total: quiz.questions.length 
             } 
           });
           return 0;
@@ -75,66 +65,45 @@ const QuizPage: React.FC = () => {
     return () => clearInterval(timer);
   }, [quiz, quizId, navigate]);
   
-  
-
   const handleSelectOption = (option: string) => {
-    if (showFeedback) return;
+    if (showFeedback) return; // Prevent changing answer during feedback
+    
     const currentQuestion = quiz?.questions[currentQuestionIndex];
     if (!currentQuestion) return;
-
+    
     setSelectedAnswers(prev => ({
       ...prev,
       [currentQuestion.id]: option
     }));
-
-    const correct = option === currentQuestion.correctAnswer;
-    setIsCorrect(correct);
+    
+    // Show feedback
+    setIsCorrect(option === currentQuestion.correctAnswer);
     setShowFeedback(true);
-
-    // Add 1s penalty for wrong answer
-    if (!correct) {
-      setTimeElapsedMs(prev => prev + 1);
-    }
-
+    
+    // Automatically move to next question after delay
     setTimeout(() => {
       if (currentQuestionIndex < (quiz?.questions.length || 0) - 1) {
         setCurrentQuestionIndex(prev => prev + 1);
-        setShowFeedback(false); // hide feedback
+        setShowFeedback(false);
       } else {
         // Quiz completed
         const score = calculateScore();
+        
         if (quizId === 'daily-challenge') {
           incrementDailyStreak();
         } else {
           addCompletedQuiz(quizId || '');
         }
+        
         navigate(`/results/${quizId}`, { 
           state: { 
             score, 
-            total: quiz.questions.length-1,
-            timeElapsedMs // Pass elapsed time to results
+            total: quiz?.questions.length - 1 || 0 
           } 
         });
       }
     }, 1500);
   };
-
-  useEffect(() => {
-    if (!quiz) return;
-    const currentQuestion = quiz.questions[currentQuestionIndex];
-    if (!currentQuestion) return;
-
-    // Create an array of indices [0, 1, 2, ...]
-    const indices = currentQuestion.options.map((_, idx) => idx);
-
-    // Fisher-Yates shuffle
-    for (let i = indices.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [indices[i], indices[j]] = [indices[j], indices[i]];
-    }
-
-    setShuffledIndices(indices);
-  }, [quiz, currentQuestionIndex]);
   
   const calculateScore = (): number => {
     if (!quiz) return 0;
@@ -145,16 +114,10 @@ const QuizPage: React.FC = () => {
     }, 0);
   };
 
-  // const formatTime = (seconds: number): string => {
-  //   const mins = Math.floor(seconds / 60);
-  //   const secs = seconds % 60;
-  //   return `${mins}:${secs.toString().padStart(2, '0')}`;
-  // };
-  const formatTimeMs = (ms: number): string => {
-    const mins = Math.floor(ms / 60000);
-    const secs = Math.floor((ms % 60000) / 1000);
-    const msecs = Math.floor((ms % 1000) / 10); // for two digits
-    return `${mins}:${secs.toString().padStart(2, '0')}.${msecs.toString().padStart(2, '0')}`;
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
   
   if (!quiz) {
@@ -178,7 +141,6 @@ const QuizPage: React.FC = () => {
       </Layout>
     );
   }
-
   
   return (
     <Layout title={quiz.title} showBack={false} showNav={false}>
@@ -205,7 +167,7 @@ const QuizPage: React.FC = () => {
           <span className={`text-xl font-bold ${
             timeLeft <= 10 ? 'text-error-500' : timeLeft <= 30 ? 'text-warning-500' : 'text-neutral-700'
           }`}>
-            <span>{formatTimeMs(timeElapsedMs)}</span>
+            {formatTime(timeLeft)}
           </span>
         </motion.div>
       </div>
@@ -218,8 +180,7 @@ const QuizPage: React.FC = () => {
       {/* Options */}
       <div className="space-y-3">
         <AnimatePresence mode="wait">
-          {shuffledIndices.map((shuffledIdx, index) => {
-            const option = currentQuestion.options[shuffledIdx];
+          {currentQuestion.options.map((option, index) => {
             const selected = selectedAnswers[currentQuestion.id] === option;
             const showCorrect = showFeedback && option === currentQuestion.correctAnswer;
             const showIncorrect = showFeedback && selected && option !== currentQuestion.correctAnswer;

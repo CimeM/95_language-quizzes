@@ -4,7 +4,7 @@ import { UserProfile } from '../types';
 
 export const updateUserProgress = async (userP: UserProgress) => {
   try {
-    // console.log("updateUserProgress userP: ", userP)
+    console.log("updateUserProgress userP: ", userP)
     const response = await fetch(API_URL+'/api/user-progress' + '/'+ userP.userId , {
       method: 'POST',
       headers: {
@@ -120,37 +120,8 @@ export const getUserAccount = async (userId: string) : Promise<UserProfile> => {
   }
 };
 
-
-import { weeklyQuizzes } from '../data/fr/preplexity-adjectives.ts';
-import { weeklyQuizzes as weeklyQuizzes1 } from '../data/fr/preplexity-adverbs.ts';
-import { weeklyQuizzes as weeklyQuizzes2 } from '../data/fr/preplexity-articles.ts';
-import { weeklyQuizzes as weeklyQuizzes3 } from '../data/fr/preplexity-conjugation.ts';
-import { weeklyQuizzes as weeklyQuizzes4 } from '../data/fr/preplexity-interrogatives.ts';
-import { weeklyQuizzes as weeklyQuizzes5 } from '../data/fr/preplexity-negation.ts';
-import { weeklyQuizzes as weeklyQuizzes6 } from '../data/fr/preplexity-nounandgender.ts';
-import { weeklyQuizzes as weeklyQuizzes7 } from '../data/fr/preplexity-prepositions.ts';
-import { weeklyQuizzes as weeklyQuizzes8 } from '../data/fr/preplexity-pronouns.ts';
-import { weeklyQuizzes as weeklyQuizzes9 } from '../data/fr/preplexity-verbs-essential.ts';
-import { weeklyQuizzes as weeklyQuizzes10 } from '../data/fr/preplexity-verbs-essential.ts';
-import { weeklyQuizzes as weeklyQuizzes11 } from '../data/fr/preplexity-verbs-essential-2.ts';
-import { weeklyQuizzes as weeklyQuizzes12 } from '../data/fr/preplexity-verbs-essential-3.ts';
-import { dailyChallenges } from '../data/fr/preplexity-daily.ts';
-
-const allFRquizzes = [
-    weeklyQuizzes, 
-    weeklyQuizzes1, 
-    weeklyQuizzes2, 
-    weeklyQuizzes3, 
-    weeklyQuizzes4, 
-    weeklyQuizzes5, 
-    weeklyQuizzes6, 
-    weeklyQuizzes7, 
-    weeklyQuizzes8, 
-    weeklyQuizzes9, 
-    weeklyQuizzes10, 
-    weeklyQuizzes11,
-    weeklyQuizzes12 
-  ]
+import { allquizzes as allFRquizzes } from '../data/fr/aggregator';
+import { allquizzes as allITAquizzes } from '../data/ita/aggregator';
 
 export const fetchWeeklyQuizzes = async (language: Language) : Promise<ThemeQuiz[]> =>{
   
@@ -158,11 +129,17 @@ export const fetchWeeklyQuizzes = async (language: Language) : Promise<ThemeQuiz
   let onejan = new Date(now.getFullYear(), 0, 1);
   let weekNumber = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7);
 
-  if(language=='french'){
-    const datasetNumber = weekNumber % allFRquizzes.length ; //random integer from 0 to 10:
+  if(language.includes('fr') ){
+    const datasetNumber = weekNumber % allFRquizzes.length ; //random integer 
     return allFRquizzes[datasetNumber]; // rotates between all options weekly
-  }else{
-    const datasetNumber = weekNumber % allFRquizzes.length ; //random integer from 0 to 10:
+  }
+  else if(language.includes("ita")){
+    const datasetNumber = weekNumber % allITAquizzes.length ; //random integer 
+    return allITAquizzes[datasetNumber]; // rotates between all options weekly
+  }
+  else{
+    console.log("falling back to default language. language set to : ", language)
+    const datasetNumber = weekNumber % allFRquizzes.length ; //random integer
     return allFRquizzes[datasetNumber]; // rotates between all options weekly
   }
 }
@@ -172,48 +149,32 @@ export const fetchDailyChallenge = async (language: Language) : Promise<ThemeQui
   let onejan = new Date(now.getFullYear(), 0, 1);
   let daysSinceJan = Math.ceil((((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1));
   
-  if(language=='french'){
+  if(language.includes('fr')){
     let selectedDatasetNumber = daysSinceJan%dailyChallenges.length;
-    console.log("fetchDailyChallenge", language, selectedDatasetNumber);
     return dailyChallenges[selectedDatasetNumber]
-    
-  }else{ // fallback to french option
+  }
+  else if(language.includes('ita')){
+    let selectedDatasetNumber = daysSinceJan%dailyITAChallenges.length;
+    return dailyITAChallenges[selectedDatasetNumber]
+  }
+  else{ // fallback to french option
+    console.log("falling back to default language. language set to : ", language)
     let selectedDatasetNumber = daysSinceJan%dailyChallenges.length;
     return dailyChallenges[selectedDatasetNumber];
   }
-    
 }
 
-import { vocabullaryDatasets } from '../data/fr/preplexity-vocab00.ts';
-import { vocabullaryDatasets as vocabullaryDatasets0 } from '../data/fr/preplexity-vocab0';
-import { vocabullaryDatasets as vocabullaryDatasets1 } from '../data/fr/preplexity-vocab1';
-import { vocabullaryDatasets as vocabullaryDatasets2 } from '../data/fr/preplexity-vocab2';
-import { vocabullaryDatasets as vocabullaryDatasets3 } from '../data/fr/preplexity-vocab3';
-import { vocabullaryDatasets as vocabullaryDatasets4 } from '../data/fr/preplexity-vocab4';
-import { vocabullaryDatasets as vocabullaryDatasets5 } from '../data/fr/preplexity-vocab5';
-import { vocabullaryDatasets as vocabullaryDatasets6 } from '../data/fr/preplexity-vocab6';
-import { vocabullaryDatasets as vocabullaryDatasets7 } from '../data/fr/preplexity-vocab7';
-import { vocabullaryDatasets as vocabullaryDatasets8 } from '../data/fr/preplexity-vocab8';
-import { vocabullaryDatasets as vocabullaryDatasets9 } from '../data/fr/preplexity-vocab9';
-import { vocabullaryDatasets as vocabullaryDatasets10 } from '../data/fr/preplexity-vocab10';
 
-const allFRvocabullaryDatasets = [
-    vocabullaryDatasets, 
-    vocabullaryDatasets0,
-    vocabullaryDatasets1,
-    vocabullaryDatasets2,
-    vocabullaryDatasets3,
-    vocabullaryDatasets4,
-    vocabullaryDatasets5,
-    vocabullaryDatasets6,
-    vocabullaryDatasets7,
-    vocabullaryDatasets8,
-    vocabullaryDatasets9,
-    vocabullaryDatasets10,
-];
+import { allModulesVocabulary as allFRvocabullaryDatasets } from '../data/fr/aggregator';
+import { allModulesVocabulary as allITAvocabullaryDatasets } from '../data/ita/aggregator';
 
 export const fetchVocabularies = async (language: Language) : Promise<VocabularySet[]> =>{
   
-  return allFRvocabullaryDatasets.filter(x => x.language == language); // rotates between all options weekly
-  
+  if(language.includes('fr') ){
+    return allFRvocabullaryDatasets.filter(x => x.language == language); // rotates between all options weekly
+  }
+  else if(language.includes("ita")){
+    return allITAvocabullaryDatasets.filter(x => x.language == language); // rotates between all options weekly
+  }
+  else{}
 }

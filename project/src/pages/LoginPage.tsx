@@ -55,8 +55,8 @@ const LoginPage: React.FC = () => {
         <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold">
-              <span className="text-primary-500">Quiz</span>
-              <span className="text-accent-500">95</span>
+              <span className="text-primary-500">Fluent95</span>
+              {/* <span className="text-accent-500">95</span> */}
             </h1>
             <p className="text-neutral-600 mt-2">
               {isLogin ? 'Welcome back!' : 'Create your account'}

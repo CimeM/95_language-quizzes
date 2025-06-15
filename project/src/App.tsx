@@ -8,7 +8,7 @@ import QuizPage from './pages/QuizPage';
 import VocabularyPage from './pages/VocabularyPage';
 import SettingsPage from './pages/SettingsPage';
 import ResultsPage from './pages/ResultsPage';
-import PaymentPage from './pages/PaymentPage1';
+import PaymentPage from './pages/PaymentPage';
 import ProfilePage from './pages/ProfilePage';
 import GlobalScorePage from './pages/GlobalScorePage';
 import { useAuth } from './context/AuthContext';

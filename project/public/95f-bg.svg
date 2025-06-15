@@ -1,23 +1,127 @@
-<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <filter id="textShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="2" dy="2" stdDeviation="0.5" flood-color="#222" flood-opacity="0.7"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="120"
+   height="120"
+   viewBox="0 0 120 120"
+   version="1.1"
+   id="svg2"
+   sodipodi:docname="95f-bg.svg"
+   inkscape:version="1.4.2 (2aeb623e1d, 2025-05-12)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview2"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="5.600875"
+     inkscape:cx="65.168389"
+     inkscape:cy="49.367287"
+     inkscape:window-width="1613"
+     inkscape:window-height="1531"
+     inkscape:window-x="12"
+     inkscape:window-y="10"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <defs
+     id="defs1">
+    <filter
+       id="textShadow"
+       x="0"
+       y="0"
+       width="1"
+       height="1">
+      <feDropShadow
+         dx="2"
+         dy="2"
+         stdDeviation="0.5"
+         flood-color="#222"
+         flood-opacity="0.7" />
     </filter>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient9"
+       id="radialGradient10"
+       cx="82.162651"
+       cy="139.57799"
+       fx="82.162651"
+       fy="139.57799"
+       r="22.536657"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(2.868456,0,0,2.868456,-175.93506,-340.59476)" />
+    <linearGradient
+       id="linearGradient9"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0.28344041"
+         id="stop9" />
+      <stop
+         style="stop-color:#e7e7e7;stop-opacity:1;"
+         offset="1"
+         id="stop10" />
+    </linearGradient>
   </defs>
   <!-- Chamfered rectangle background (10px chamfer) -->
-  <polygon 
-    points="0,0 0,120 120,120 120,0"
-    fill="#E0E0EE"/>
+  <rect
+     style="fill:url(#radialGradient10);fill-opacity:1;stroke-width:20.5927"
+     id="rect1-7"
+     width="129.29082"
+     height="129.29082"
+     x="-4.9005303"
+     y="-4.8668537"
+     rx="8.0152216"
+     ry="8.0152216" />
   <!-- Text with shadow filter applied -->
-  <text x="60" y="60" 
-        font-family="Clearview, sans-serif" 
-        font-weight="bold" font-size="30" 
-        font-style="italic"
-        text-anchor="middle" 
-        dominant-baseline="middle" 
-        fill="#0077FF" 
-        filter="url(#textShadow)">
-    <tspan x="35" dy="-17" font-size="38">95</tspan>
-    <tspan x="75" dy="26" font-size="100">F</tspan>
-  </text>
+  <g
+     id="g9"
+     transform="matrix(3.2478324,0,0,3.2478324,-28.883157,-138.33092)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke-width:7.17899"
+       id="rect7-2"
+       width="15.409572"
+       height="24.933212"
+       x="56.697571"
+       y="-3.786684"
+       rx="2.778168"
+       ry="2.778168"
+       transform="rotate(60)" />
+    <rect
+       style="fill:#2ea1ff;fill-opacity:1;stroke-width:7.17899"
+       id="rect7-7-1"
+       width="15.409572"
+       height="24.933212"
+       x="61.083241"
+       y="-25.673244"
+       rx="2.778168"
+       ry="2.778168"
+       transform="rotate(75)" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke-width:3.58949"
+       id="rect8-2"
+       width="7.1676736"
+       height="3.2041538"
+       x="-60.756725"
+       y="-44.319538"
+       rx="0"
+       ry="0"
+       transform="rotate(-150)" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke-width:4.68048"
+       id="rect8-9-0"
+       width="12.186897"
+       height="3.2041538"
+       x="-44.298431"
+       y="57.547405"
+       rx="0"
+       ry="0"
+       transform="rotate(-60)" />
+  </g>
 </svg>

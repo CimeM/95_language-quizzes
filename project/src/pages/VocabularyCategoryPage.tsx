@@ -8,6 +8,9 @@ const VocabularyCategoryPage: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const { vocabularies } = useVocabularyDataContext();
 
+  const [playingWord, setPlayingWord] = React.useState<string | null>(null);
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
+
   // Find the vocabulary set by id
   const vocabData = vocabularies.find(x => x.id === categoryId);
 
@@ -19,10 +22,52 @@ const VocabularyCategoryPage: React.FC = () => {
     );
   }
 
+  // Clean Up Audio on Unmount when user leaves the page
+  React.useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
+      }
+    };
+  }, []);
+
   // Calculate progress if not present
   const totalWords = vocabData.words.length;
   const masteredCount = vocabData.words.filter(w => w.mastered).length;
   const progress = vocabData.progress ?? masteredCount;
+
+  const playAudio = async (lang: string, text: string, wordKey: string) => {
+    // Always clear before starting new audio
+    setPlayingWord(wordKey);
+
+    // Stop any previous audio
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = '';
+    }
+
+    try {
+      const response = await fetch(
+        `https://langapi.rivieraapps.com/audio?lang=${encodeURIComponent(lang)}&text=${encodeURIComponent(text)}`
+      );
+      if (!response.ok) throw new Error('Audio fetch failed');
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const audio = new window.Audio(url);
+
+      // Set handlers BEFORE playing
+      audio.onended = () => setPlayingWord(null);
+      audio.onerror = () => setPlayingWord(null);
+
+      audioRef.current = audio;
+      audio.play();
+    } catch (e) {
+      setPlayingWord(null);
+      alert('Could not play audio');
+    }
+  };
 
   return (
     <Layout title={vocabData.title} showBack>
@@ -42,7 +87,22 @@ const VocabularyCategoryPage: React.FC = () => {
             <li key={w.word} className="p-4 flex flex-col sm:flex-row sm:items-center">
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-primary-700 text-base">{w.word}</span>
+                  
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-primary-700 text-base">{w.word}</span>
+                    <button
+                      className="ml-2 px-2 py-1 bg-primary-100 text-primary-700 rounded hover:bg-primary-200 transition-colors text-sm"
+                      onClick={() => playAudio('fr', w.word + ". " + w.phrases[0].example, w.word)}
+                      disabled={playingWord === w.word}
+                      aria-label={`Play audio for ${w.word}`}
+                    >
+                      {playingWord === w.word ? 'Playing...' : '🔊'}
+                    </button>
+                    {w.mastered && (
+                      <span className="inline-block text-green-500 text-lg" title="Mastered">✓</span>
+                    )}
+                  </div>
+
                   {w.mastered && (
                     <span className="inline-block text-green-500 text-lg" title="Mastered">✓</span>
                   )}
@@ -59,6 +119,7 @@ const VocabularyCategoryPage: React.FC = () => {
                   </ul>
                 )}
               </div>
+              
             </li>
           ))}
         </ul>

@@ -5,7 +5,7 @@ export const weeklyQuizzes: ThemeQuiz[] = [
     "id": "adjective-agreement-it-1",
     "level": "A1",
     "title": "Accordo degli aggettivi",
-    "language": "italian",
+    "language": "ita",
     "theme": "adjectives",
     "description": "Esercizi per praticare l'accordo degli aggettivi in genere e numero con i nomi che descrivono.",
     "medal": "none",
@@ -48,7 +48,7 @@ export const weeklyQuizzes: ThemeQuiz[] = [
     "id": "adjective-meaning-it-1",
     "level": "A1",
     "title": "Significato degli aggettivi comuni",
-    "language": "italian",
+    "language": "ita",
     "theme": "adjectives",
     "description": "Scegli il significato corretto dell'aggettivo dato.",
     "medal": "none",
@@ -91,7 +91,7 @@ export const weeklyQuizzes: ThemeQuiz[] = [
     "id": "adjective-comparative-it-1",
     "level": "A2",
     "title": "Aggettivi Comparativi",
-    "language": "italian",
+    "language": "ita",
     "theme": "adjectives",
     "description": "Esercizi per praticare i comparativi di maggioranza, minoranza e uguaglianza con gli aggettivi.",
     "medal": "none",
@@ -134,7 +134,7 @@ export const weeklyQuizzes: ThemeQuiz[] = [
     "id": "adjective-position-it-1",
     "level": "B1",
     "title": "Posizione degli aggettivi",
-    "language": "italian",
+    "language": "ita",
     "theme": "adjectives",
     "description": "Scegli la posizione corretta dell'aggettivo nella frase.",
     "medal": "none",
@@ -202,7 +202,7 @@ export const weeklyQuizzes: ThemeQuiz[] = [
     "id": "adjective-nuance-it-1",
     "level": "B2",
     "title": "Aggettivi con significato diverso",
-    "language": "italian",
+    "language": "ita",
     "theme": "adjectives",
     "description": "Scegli il significato corretto dell'aggettivo in base alla posizione nella frase.",
     "medal": "none",
@@ -270,7 +270,7 @@ export const weeklyQuizzes: ThemeQuiz[] = [
     "id": "possessive-adjectives-it-1",
     "level": "A2",
     "title": "Aggettivi Possessivi",
-    "language": "italian",
+    "language": "ita",
     "theme": "adjectives",
     "description": "Esercizi sugli aggettivi possessivi: scegli la forma corretta secondo la persona, il genere e il numero.",
     "medal": "none",
@@ -313,7 +313,7 @@ export const weeklyQuizzes: ThemeQuiz[] = [
     "id": "demonstrative-adjectives-it-1",
     "level": "B1",
     "title": "Aggettivi Dimostrativi",
-    "language": "italian",
+    "language": "ita",
     "theme": "adjectives",
     "description": "Esercizi sugli aggettivi dimostrativi (questo, quello): scegli la forma corretta.",
     "medal": "none",
@@ -356,7 +356,7 @@ export const weeklyQuizzes: ThemeQuiz[] = [
     "id": "advanced-adjectives-it-1",
     "level": "C1",
     "title": "Aggettivi avanzati e espressioni idiomatiche",
-    "language": "italian",
+    "language": "ita",
     "theme": "adjectives",
     "description": "Domande su aggettivi con doppio significato e uso idiomatico.",
     "medal": "none",
@@ -419,6 +419,6 @@ export const weeklyQuizzes: ThemeQuiz[] = [
         "correctAnswer": "Sfortunato"
       }
     ]
-  }
-];
+  },
+  
 ];

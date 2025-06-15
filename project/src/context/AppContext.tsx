@@ -12,7 +12,7 @@ interface AppContextType {
   userProgress: UserProgress;
   userProfile: UserProfile;
   setUserProfile: (profile: UserProfile) => void;
-  updateQuizMedal: (quizId: string, medal: MedalType) => void;
+  updateQuizMedal: (quizId: string, medal: MedalType,  timeElapsedMs: number) => void;
   incrementDailyStreak: () => void;
   resetDailyStreak: () => void;
   addCompletedQuiz: (quizId: string) => void;
@@ -170,19 +170,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, [userProfile]);
 
-  const updateQuizMedal = async (quizId: string, medal: MedalType) => {
+  const updateQuizMedal = async (quizId: string, medal: MedalType, timeElapsedMs: number) => {
 
     const clubId = "default";
-    console.log("updateQuizMedal", quizId, medal);
+    // console.log("updateQuizMedal", quizId, medal, timeElapsedMs);
     try {
       setUserProgress(prev => {
         const key = quizId.replace(/\W/g, '');
-        const currentMedalInfo = prev.medals?.[key] || { medal: 'none', clubId: '' };
+        const currentMedalInfo = prev.medals?.[key] || { medal: 'none', clubId: '', timeElapsedMs: 15000 };
         const medalRank = { none: 0, bronze: 1, silver: 2, gold: 3 };
         const currentWeeklyMedal = prev.weeklyQuizzes?.[key] || 'none';
         // console.log("updateQuizMedal medalRank[medal] > medalRank[currentMedalInfo.medal as MedalType]", medalRank[medal], ">", medalRank[currentMedalInfo.medal as MedalType], (medalRank[medal] > medalRank[currentMedalInfo.medal]) );
-        if (medalRank[medal] > medalRank[currentMedalInfo.medal]) {
-          const newMedalInfo: MedalInfo = { medal, clubId };
+        if (medalRank[medal] > medalRank[currentMedalInfo.medal] || timeElapsedMs < currentMedalInfo.timeElapsedMs) {
+          const newMedalInfo: MedalInfo = { medal, clubId, timeElapsedMs };
           const newProgress = {
             ...prev,
             medals: {
@@ -195,18 +195,20 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
               [key]: medalRank[medal] > medalRank[currentWeeklyMedal] ? medal : currentWeeklyMedal
             }
           };
-        api.updateUserProgress(newProgress).catch(error => {
-          console.error('[API] Failed to update medal:', error);
-          toast.warning('Medal saved locally - will sync when online');
-        });
-        return newProgress;
-      }
-      return prev;
-    });
+          api.updateUserProgress(newProgress).catch(error => {
+            console.error('[API] Failed to update medal:', error);
+            toast.warning('Medal saved locally - will sync when online');
+          });
+          return newProgress;
+        }
+        return prev;
+      });
+     
   } catch (error) {
     console.error('[Medal] Failed to update medal:', error);
     toast.error('Failed to update medal!');
   }
+  console.log("userProgress", userProgress)
 };
 
   const incrementDailyStreak = async () => {
@@ -256,15 +258,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }
   const changeLanguage = async (lang: Language) => {
     try {
+      console.log("set language to ", lang)
       setLanguage(lang);
       setUserProfile(prev => ({
         ...prev,
         language: lang
       }));
-      setUserProgress(prev => ({
-        ...prev,
-      }));
-      await api.updateUserProgress( userProgress);
+      // setUserProgress(prev => ({
+      //   ...prev,
+      // }));
+      // await api.updateUserProgress( userProgress );
+      await api.updateUserAccount( userProfile );
     } catch (error) {
       console.error('[Language] Failed to update:', error);
       toast.error('Failed to update language!');

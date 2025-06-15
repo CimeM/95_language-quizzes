@@ -49,24 +49,7 @@ const Card: React.FC<CardProps> = ({
       
       {medal !== 'none' && (
         <div className="mt-4 flex">
-          {medal == 'gold' && (
-            <>
-              <MedalDisplay medal={medal} size="sm" animate />
-              <MedalDisplay medal={"silver"} size="sm" animate />
-              <MedalDisplay medal={"bronze"} size="sm" animate />
-            </>
-          )}
-          {medal == 'silver' && (
-            <>
-              <MedalDisplay medal={"bronze"} size="sm" animate />
-              <MedalDisplay medal={medal} size="sm" animate />
-            </>
-          )}
-          {medal == 'bronze' && (
-            <>
-              <MedalDisplay medal={medal} size="sm" animate />
-            </>
-          )}
+          <MedalDisplay medal={medal} size="sm" animate />
         </div>
       )}
     </motion.div>
